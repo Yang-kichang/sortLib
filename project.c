@@ -22,8 +22,9 @@ int main(void)
             break;
 
         case '.':
-            float_num[10][n]=type;
+            float_num[i][n]=type;
             n++;
+
 
             break;
 
