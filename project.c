@@ -24,14 +24,17 @@ int main(void)
         case '.':
             float_num[i][n]=type;
             n++;
-
-
             break;
 
         default:
-
+            int_num[i][n]=type;
             break;
     }
+
+        
+    
+    return 0;
+}
 
 
 
