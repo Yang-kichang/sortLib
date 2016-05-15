@@ -19,8 +19,12 @@ int main()
 	bool need_change_num = false, before_op = false, to_start_change = false; //복합연산 체크를 위해서
 	while ((in = getchar()) != '\n') {
 		if ((in != ' '))
-			data[p++] = in;
-		if (need_change_num == true && (in == '*' || in == '/' || in == '%' || in == '+' || in == '-')) {
+			data[p++] = in; //작업의 편의를 위해 공백을 제거한다
+		if (need_change_num == true && (in == '*' || in == '/' || in == '%' || in == '+' || in == '-')) { 
+		/* 
+		*, /, % 가 이미 이전에 있었는데 새로운 연산자가 입력되면
+		위 연산자의 두 숫자의 입력이 종료된 상태
+		*/
 			to_start_change = true;
 			last_op = in;
 			p -= 2;
@@ -28,12 +32,12 @@ int main()
 			tmp_n2 = 0;
 		}
 		if (to_start_change == true) {
-			while (data[p] != '*' && data[p] && '/' && data[p] != '%') {
+			while (data[p] >= '0' && data[p] <= '9') {
 				tmp_n2 += data[p--] - '0';
 				tmp_n2 *= 10;
 			}
 			op = data[p--];
-			while(data[p] >= '0' && data[p] <= '9') {
+			while (data[p] >= '0' && data[p] <= '9') {
 				tmp_n1 += data[p--] - '0';
 				tmp_n1 *= 10;
 			}
@@ -45,7 +49,7 @@ int main()
 			need_change_num = true;
 	}
 	for (i = 0; i < p; i++) {
-		if(!(data[i] >= '0' && data[i] <= '9'))
+		if (!(data[i] >= '0' && data[i] <= '9'))
 			printf(" %c ", data[i]); 
 		else
 			printf("%c", data[i]);
