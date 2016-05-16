@@ -10,21 +10,23 @@ char last_op;
 //우선은 정수로 변환해서 계산 나중에는 문자열로 처리할것!
 
 void ps_change_n(char op);
+int pow(int x, int y);
 
 int main()
 {
 	int i;
+	int p_10;
 	char in;
 	char op;
 	bool need_change_num = false, before_op = false, to_start_change = false; //복합연산 체크를 위해서
 	while ((in = getchar()) != '\n') {
 		if ((in != ' '))
 			data[p++] = in; //작업의 편의를 위해 공백을 제거한다
-		if (need_change_num == true && (in == '*' || in == '/' || in == '%' || in == '+' || in == '-')) { 
-		/* 
-		*, /, % 가 이미 이전에 있었는데 새로운 연산자가 입력되면
-		위 연산자의 두 숫자의 입력이 종료된 상태
-		*/
+		if (need_change_num == true && (in == '*' || in == '/' || in == '%' || in == '+' || in == '-')) {
+			/*
+			*, /, % 가 이미 이전에 있었는데 새로운 연산자가 입력되면
+			위 연산자의 두 숫자의 입력이 종료된 상태
+			*/
 			to_start_change = true;
 			last_op = in;
 			p -= 2;
@@ -32,14 +34,14 @@ int main()
 			tmp_n2 = 0;
 		}
 		if (to_start_change == true) {
+			p_10 = 0;
 			while (data[p] >= '0' && data[p] <= '9') {
-				tmp_n2 += data[p--] - '0';
-				tmp_n2 *= 10;
+				tmp_n2 += (data[p--] - '0') * pow(10, p_10++);
 			}
+			p_10 = 0;
 			op = data[p--];
 			while (data[p] >= '0' && data[p] <= '9') {
-				tmp_n1 += data[p--] - '0';
-				tmp_n1 *= 10;
+				tmp_n1 += (data[p--] - '0') * pow(10, p_10++);
 			}
 			ps_change_n(op);
 			to_start_change = false;
@@ -50,7 +52,7 @@ int main()
 	}
 	for (i = 0; i < p; i++) {
 		if (!(data[i] >= '0' && data[i] <= '9'))
-			printf(" %c ", data[i]); 
+			printf(" %c ", data[i]);
 		else
 			printf("%c", data[i]);
 	}
@@ -73,9 +75,18 @@ void ps_change_n(char op)
 		rev_r[len++] = r % 10 + '0';
 		r /= 10;
 	}
-	for(i = len - 1; i >= 0; i--) {
+	for (i = len - 1; i >= 0; i--) {
 		data[++p] = rev_r[i];
 	}
 	data[++p] = last_op;
 	p += 1;
+}
+
+int pow(int x, int y)
+{
+	int i;
+	int r = 1;
+	for (i = 0; i < y; i++)
+		r *= x;
+	return r;
 }
