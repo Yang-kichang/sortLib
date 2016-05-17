@@ -13,6 +13,7 @@ int left_n, right_n;
 //복합연산시 숫자를 바꿔주기 위한 변수
 //우선은 정수로 변환해서 계산 나중에는 문자열로
 
+bool check_var(); //변수를 정의할 때 중복되는지 체크하는 함수
 void set_var(); //변수를 선언해주는 함수
 void read_var(); //연산을 하다가 변수를 읽어올 때 사용할 함수
 void write_new_num(char op, char last_op); //복합 연산시 숫자를 바꿔줄 함수
@@ -96,17 +97,47 @@ int main()
 	return 0;
 }
 
+bool check_var()
+{
+	int idx, i;
+	bool r = false;
+	for (idx = 0; idx < number_of_var; idx++)
+		if (var_name[idx] == input[0]) {
+			r = true;
+			break;
+		}
+	if (r == true) {
+		int len = strlen(var_value[idx]);
+		for (i = 0; i < len; i++)
+			var_value[idx][i] = NULL;
+	}
+	return r;
+}
+
 void set_var()
 {
 	int i;
 	int idx = 0;
-	var_name[number_of_var] = input[0];
-	for (i = 0; ; i++)
-		if (input[i] >= '0' && input[i] <= '9')
-			break;
-	for (; i < strlen(input); i++)
-		var_value[number_of_var][idx++] = input[i];
-	number_of_var++;
+	if (check_var()) {
+		int p_var;
+		for (p_var = 0; p_var < number_of_var; p_var++)
+			if (var_name[p_var] == input[0])
+				break;
+		for (i = 0; ; i++)
+			if (input[i] >= '0' && input[i] <= '9')
+				break;
+		for (; i < strlen(input); i++)
+			var_value[p_var][idx++] = input[i];
+	}
+	else {
+		var_name[number_of_var] = input[0];
+		for (i = 0; ; i++)
+			if (input[i] >= '0' && input[i] <= '9')
+				break;
+		for (; i < strlen(input); i++)
+			var_value[number_of_var][idx++] = input[i];
+		number_of_var++;
+	}
 }
 
 void read_var()
@@ -174,8 +205,13 @@ int check_error()
 	}
 	else if (strcmp(input, "end") == 0)
 		return 2; //종료
-	else if (error == true)
-		return -1;
+	else if (error == true) {
+		if (strlen(input) == 1 && (input[0] >= 'A' && input[0] <= 'Z')) {
+			printf("= undefined.\n");
+			return 0;
+		}
+		return -1; //error출력
+	}
 	return 3; //연산하기
 }
 
