@@ -20,6 +20,7 @@ void write_new_num(char op, char last_op); //복합 연산시 숫자를 바꿔�
 void show_var(); //VAR명령을 처리하는 함수
 void load_var(); //load명령을 처리하는 함수
 void save_var(); //save명령을 처리하는 함수
+void input_string();
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
 int ps_op(char op); //문자열로 처리를 바꿔주면 void로
 int pow(int x, int y);
@@ -35,7 +36,7 @@ int main()
 	printf("Start...\n");
 	while (1) {
 		printf("(input)");
-		gets(input);
+		input_string();
 		int flag = check_error();
 		if (flag == -1) {
 			printf("= error \n");
@@ -109,7 +110,7 @@ bool check_var()
 	if (r == true) {
 		int len = strlen(var_value[idx]);
 		for (i = 0; i < len; i++)
-			var_value[idx][i] = NULL;
+			var_value[idx][i] = '\0';
 	}
 	return r;
 }
@@ -217,10 +218,11 @@ int check_error()
 
 void show_var()
 {
+	int i;
 	if (number_of_var == 0) {
 		printf("정의된 변수 없음 \n");
 	}
-	for (int i = 0; i < number_of_var; i++) {
+	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
 		puts(var_value[i]);
 	}
@@ -234,6 +236,21 @@ void load_var()
 void save_var()
 {
 	printf("This is save_var() \n");
+}
+
+void input_string()
+{
+	char c;
+	int i = 0;
+	while (1) {
+		c = getchar();
+		if (c == '\n' || c == EOF) {
+			input[i] = '\0';
+			break;
+		}
+		else
+			input[i++] = c;
+	}
 }
 
 int ps_op(char op)
