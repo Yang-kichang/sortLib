@@ -4,51 +4,54 @@
 
 char data[1000];
 int p = 0;
-int tmp_n1, tmp_n2;
-char last_op;
+int left_n, right_n;
 //복합연산시 숫자를 바꿔주기 위한 변수
-//우선은 정수로 변환해서 계산 나중에는 문자열로 처리할것!
+//우선은 정수로 변환해서 계산 나중에는 문자열로
 
-void ps_change_n(char op);
+void write_new_num(char op, char last_op);
+int ps_op(char op); //문자열로 처리를 바꿔주면 void로
 int pow(int x, int y);
 
 int main()
 {
 	int i;
 	int p_10;
-	char in;
-	char op;
-	bool need_change_num = false, before_op = false, to_start_change = false; //복합연산 체크를 위해서
-	while ((in = getchar()) != '\n') {
-		if ((in != ' '))
-			data[p++] = in; //작업의 편의를 위해 공백을 제거한다
-		if (need_change_num == true && (in == '*' || in == '/' || in == '%' || in == '+' || in == '-')) {
-			/*
-			*, /, % 가 이미 이전에 있었는데 새로운 연산자가 입력되면
-			위 연산자의 두 숫자의 입력이 종료된 상태
-			*/
-			to_start_change = true;
-			last_op = in;
-			p -= 2;
-			tmp_n1 = 0;
-			tmp_n2 = 0;
-		}
-		if (to_start_change == true) {
-			p_10 = 0;
-			while (data[p] >= '0' && data[p] <= '9') {
-				tmp_n2 += (data[p--] - '0') * pow(10, p_10++);
+	char input[1000];
+	int len_input;
+	char op, last_op;
+	bool need_change_num = false, to_start_change = false; //복합연산 체크를 위해서
+	gets(input);
+	len_input = strlen(input);
+	for (i = 0; i < len_input; i++) {
+		if (true) {
+			if ((input[i] == ' '))
+				continue;	//작업의 편의를 위해 공백을 제거한다
+			data[p++] = input[i];
+			if (need_change_num == true && (input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-')) {
+				to_start_change = true;
+				last_op = input[i];
+				p -= 2;
+				left_n = 0;
+				right_n = 0;
 			}
-			p_10 = 0;
-			op = data[p--];
-			while (data[p] >= '0' && data[p] <= '9') {
-				tmp_n1 += (data[p--] - '0') * pow(10, p_10++);
+			if (to_start_change == true) {
+				p_10 = 0;
+				while (data[p] >= '0' && data[p] <= '9') {
+					right_n += (data[p--] - '0') * pow(10, p_10++);
+				}
+				p_10 = 0;
+				op = data[p--];
+				while (data[p] >= '0' && data[p] <= '9') {
+					left_n += (data[p--] - '0') * pow(10, p_10++);
+				}
+				write_new_num(op, last_op);
+				to_start_change = false;
+				need_change_num = false;
 			}
-			ps_change_n(op);
-			to_start_change = false;
-			need_change_num = false;
+
+			if (input[i] == '*' || input[i] == '/' || input[i] == '%')
+				need_change_num = true;
 		}
-		if (in == '*' || in == '/' || in == '%')
-			need_change_num = true;
 	}
 	for (i = 0; i < p; i++) {
 		if (!(data[i] >= '0' && data[i] <= '9'))
@@ -61,16 +64,14 @@ int main()
 	return 0;
 }
 
-void ps_change_n(char op)
+void write_new_num(char op, char last_op)
 {
 	int i = 0;
 	int r;
 	char rev_r[1000] = { 0, };
 	int len = 0;
 
-	if (op == '*') r = tmp_n1 * tmp_n2;
-	else if (op == '/') r = tmp_n1 / tmp_n2;
-	else r = tmp_n1 % tmp_n2;
+	r = ps_op(op);
 	while (r > 0) {
 		rev_r[len++] = r % 10 + '0';
 		r /= 10;
@@ -82,6 +83,19 @@ void ps_change_n(char op)
 	p += 1;
 }
 
+int ps_op(char op)
+{
+	if (op == '+')
+		return left_n + right_n;
+	else if (op == '-')
+		return left_n - right_n;
+	else if (op == '*')
+		return left_n * right_n;
+	else if (op == '/')
+		return left_n / right_n;
+	else if (op == '%')
+		return left_n % right_n;
+}
 int pow(int x, int y)
 {
 	int i;
