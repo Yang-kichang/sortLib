@@ -3,6 +3,7 @@
 #include <string.h>
 
 char data[1000];
+char def_var[4]={'V','A','R'};//변수 선언을 위한 배열
 int p = 0;
 int left_n, right_n;
 //복합연산시 숫자를 바꿔주기 위한 변수
@@ -20,47 +21,57 @@ int main()
 	int len_input;
 	char op, last_op;
 	bool need_change_num = false, to_start_change = false; //복합연산 체크를 위해서
-	gets(input);
-	len_input = strlen(input);
-	for (i = 0; i < len_input; i++) {
-		if (true) {
-			if ((input[i] == ' '))
-				continue;	//작업의 편의를 위해 공백을 제거한다
-			data[p++] = input[i];
-			if (need_change_num == true && (input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-')) {
-				to_start_change = true;
-				last_op = input[i];
-				p -= 2;
-				left_n = 0;
-				right_n = 0;
-			}
-			if (to_start_change == true) {
-				p_10 = 0;
-				while (data[p] >= '0' && data[p] <= '9') {
-					right_n += (data[p--] - '0') * pow(10, p_10++);
-				}
-				p_10 = 0;
-				op = data[p--];
-				while (data[p] >= '0' && data[p] <= '9') {
-					left_n += (data[p--] - '0') * pow(10, p_10++);
-				}
-				write_new_num(op, last_op);
-				to_start_change = false;
-				need_change_num = false;
-			}
+	printf("Start...\n");
+	while(1){
+		gets(input);
 
-			if (input[i] == '*' || input[i] == '/' || input[i] == '%')
-				need_change_num = true;
+		if(strncmp(input,def_var, 3)==0)//VAR인지 아닌지 검사
+		{
+			printf("setting var\n");	
+			continue;
 		}
-	}
-	for (i = 0; i < p; i++) {
-		if (!(data[i] >= '0' && data[i] <= '9'))
-			printf(" %c ", data[i]);
-		else
-			printf("%c", data[i]);
-	}
-	printf("\n");
+		len_input = strlen(input);
+		for (i = 0; i < len_input; i++) {
 
+			if (true) {
+
+				if ((input[i] == ' '))
+					continue;	//작업의 편의를 위해 공백을 제거한다
+				data[p++] = input[i];
+				if (need_change_num == true && (input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-')) {
+					to_start_change = true;
+					last_op = input[i];
+					p -= 2;
+					left_n = 0;
+					right_n = 0;
+				}
+				if (to_start_change == true) {
+					p_10 = 0;
+					while (data[p] >= '0' && data[p] <= '9') {
+						right_n += (data[p--] - '0') * pow(10, p_10++);
+					}
+					p_10 = 0;
+					op = data[p--];
+					while (data[p] >= '0' && data[p] <= '9') {
+						left_n += (data[p--] - '0') * pow(10, p_10++);
+					}
+					write_new_num(op, last_op);
+					to_start_change = false;
+					need_change_num = false;
+				}
+
+				if (input[i] == '*' || input[i] == '/' || input[i] == '%')
+					need_change_num = true;
+			}
+		}
+		for (i = 0; i < p; i++) {
+			if (!(data[i] >= '0' && data[i] <= '9'))
+				printf(" %c ", data[i]);
+			else
+				printf("%c", data[i]);
+		}
+		printf("\n");
+	}
 	return 0;
 }
 
@@ -104,3 +115,6 @@ int pow(int x, int y)
 		r *= x;
 	return r;
 }
+
+
+
