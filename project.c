@@ -9,23 +9,30 @@ int number_of_var = 0;
 char input[1000];
 char data[1000];
 int p = 0;
-char left[60]={0}, right[60]={0};
+char left[60], right[60];
 char r[1000]; //연산의 결과를 저장할 배열
+
+char op;
 
 bool check_var(); //변수를 정의할 때 중복되는지 체크하는 함수
 void set_var(); //변수를 선언해주는 함수
 void read_var(); //연산을 하다가 변수를 읽어올 때 사용할 함수
-void write_new_num(char op, char last_op); //복합 연산시 숫자를 바꿔줄 함수
 void show_var(); //VAR명령을 처리하는 함수
 void load_var(); //load명령을 처리하는 함수
 void save_var(); //save명령을 처리하는 함수
-void change_equation(); //수식을 정리해주는 함수
 void input_string();
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
-void ps_op(char op); //문자열로 처리를 바꿔주면 void로
-int pow(int x, int y);
 
-//사칙연산 함수들
+				   //작업중인 함수들
+void copy_left(int s, int e);
+void copy_right(int s, int e);
+void write_new_num(); //복합 연산시 숫자를 바꿔줄 함수
+void change_equation(); //수식을 정리해주는 함수
+void ps_cal(); //문자열로 처리를 바꿔주면 void로
+void set_clear(); //left, right, r 배열 초기화
+void remove_data(int n); //data배열 초기화
+
+						 //사칙연산 함수들
 void plus(); //덧셈
 void minus(); //뺄셈
 void multiple(); //곱셈
@@ -54,16 +61,120 @@ int main()
 			printf("= ");
 			change_equation();
 			//수식 정리 완료
-			for (int i = 0; i < p; i++) {
-				if (!(data[i] >= '0' && data[i] <= '9'))
-					printf(" %c ", data[i]);
-				else
-					printf("%c", data[i]);
-			}
-			printf("\n");
+
+			//printf("\n");
 		}
 	}
 	return 0;
+}
+
+void change_equation()
+{
+	int i, x;
+	int len_input;
+	bool need_change_num = false, to_start_change = false, pass_this = true; //복합연산 체크를 위해서
+	len_input = strlen(input);
+	p = 0;
+	remove_data(0);
+	for (i = 0; i < len_input; i++) {
+		data[p++] = input[i];
+		if (data[p - 1] >= 'A' && data[p] <= 'Z') {
+			p--;
+			read_var();
+		}
+		if (!pass_this && input[i] == ' ')
+			to_start_change = true;
+		if (need_change_num == true && input[i] == ' ' && pass_this) { //연산자 뒤에 처음 오는 공백은 아직 두번째 숫자를 입력받기 전이므로 pass
+			pass_this = false;
+			set_clear();
+		}
+		if (to_start_change == true) {
+			//요부분 나중에 함수로 교체하자...!
+			//재사용하기 괜찮을듯 하다....!
+			int s, e;
+			p -= 2;
+			e = p;
+			while (data[p] >= '0' && data[p] <= '9')
+				p--;
+			s = p + 1;
+			copy_right(s, e);
+			op = data[--p];
+			p -= 2;
+			e = p;
+			while (data[p] >= '0' && data[p] <= '9')
+				p--;
+			s = p + 1;
+			p++;
+			copy_left(s, e);
+			ps_cal();
+			write_new_num();
+			to_start_change = false;
+			need_change_num = false;
+			pass_this = true;
+		}
+		if (input[i] == '*' || input[i] == '/' || input[i] == '%') //*, /, % 연산자가 있으므로 우선적으로 계산할 필요가 있음
+			need_change_num = true;
+	}
+	puts(data);
+}
+
+void write_new_num()
+{
+	int i = 0;
+	int len = 0;
+
+	remove_data(p);
+	len = strlen(r);
+	for (i = 0; i < len; i++)
+		data[p++] = r[i];
+	data[p++] = ' ';
+	set_clear();
+}
+
+void ps_cal()
+{
+	if (op == '+')
+		plus(); //덧셈함수 호출
+	else if (op == '-')
+		minus(); //마이너스 함수 호출
+	else if (op == '*')
+		multiple(); //곱셈함수 호출
+	else if (op == '/')
+		divide(); //나눗셈 함수 호출
+	else if (op == '%')
+		modular(); //나머지연산 함수 호출
+}
+
+void copy_right(int s, int e)
+{
+	int i, idx = 0;
+	for (i = s; i <= e; i++)
+		right[idx++] = data[i];
+}
+
+void copy_left(int s, int e)
+{
+	int i, idx = 0;
+	for (i = s; i <= e; i++)
+		left[idx++] = data[i];
+}
+
+void set_clear()
+{
+	int i;
+	for (i = 0; i < strlen(left); i++)
+		left[i] = '\0';
+	for (i = 0; i < strlen(right); i++)
+		right[i] = '\0';
+	for (i = 0; i < strlen(r); i++)
+		r[i] = '\0';
+}
+
+void remove_data(int n)
+{
+	int i, len = strlen(data);
+	for (i = n; i < len; i++)
+		data[i] = '\0';
 }
 
 bool check_var()
@@ -119,24 +230,6 @@ void read_var()
 		data[p++] = var_value[idx][i];
 }
 
-void write_new_num(char op, char last_op)
-{
-	int i = 0;
-	char rev_r[1000] = { 0, };
-	int len = 0;
-
-	//r = ps_op(op);
-	//r을 문자열로 만들고 사칙연산 함수 결과를 r에 저장해야함
-	while (r > 0) {
-		rev_r[len++] = r % 10 + '0';
-		r /= 10;
-	}
-	for (i = len - 1; i >= 0; i--) {
-		data[++p] = rev_r[i];
-	}
-	data[++p] = last_op;
-	p += 1;
-}
 
 int check_error()
 {
@@ -221,88 +314,28 @@ void input_string()
 	}
 }
 
-void ps_op(char op)
-{
-	if (op == '+')
-		plus(); //덧셈함수 호출
-	else if (op == '-')
-		minus(); //마이너스 함수 호출
-
-	else if (op == '*')
-		multiple(); //곱셈함수 호출
-	else if (op == '/')
-		divide(); //나눗셈 함수 호출
-	else if (op == '%')
-		modular(); //나머지연산 함수 호출
-}
-
-void change_equation()
-{
-	int i,x;
-	int p_10;
-	int len_input;
-	char op, last_op;
-	bool need_change_num = false, to_start_change = false; //복합연산 체크를 위해서
-	bool is_it_num = true;
-	len_input = strlen(input);
-	p = 0;
-	for (i = 0; i < len_input; i++) {
-
-		if ((input[i] == ' '))
-			continue;	//작업의 편의를 위해 공백을 제거한다
-		data[p++] = input[i];
-		if (data[p - 1] >= 'A' && data[p] <= 'Z') {
-			p--;
-			read_var();
-		}
-		if (need_change_num == true && (input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-')) {
-			to_start_change = true;
-			last_op = input[i];
-			p -= 2;
-			for(x=0;x<60;x++){
-				left[x] = 0;
-				right[x] = 0;
-			}
-		}
-		if (to_start_change == true) {
-			p_10 = 0;
-			while (data[p] >= '0' && data[p] <= '9') {
-				//  right[60] += (data[p--] - '0') * pow(10, p_10++); 수정필요
-			}
-			p_10 = 0;
-			op = data[p--];
-			while (data[p] >= '0' && data[p] <= '9') {
-				//  left[60] += (data[p--] - '0') * pow(10, p_10++); 수정필요
-			}
-			write_new_num(op, last_op);
-			to_start_change = false;
-			need_change_num = false;
-		}
-		if (input[i] == '*' || input[i] == '/' || input[i] == '%')
-			need_change_num = true;
-	}
-}
-int pow(int x, int y)
-{
-	int i;
-	int r = 1;
-	for (i = 0; i < y; i++)
-		r *= x;
-	return r;
-}
-
 void plus() //덧셈 함수
 {
+	//for testing
+	strcpy(r, "testing plus");
 }
 void minus() //뺄셈
 {
+	//for testing
+	strcpy(r, "testing minus!");
 }
 void multiple()
 {
+	//for testing
+	strcpy(r, "testing multiple!");
 }
 void divide()
 {
+	//for testing
+	strcpy(r, "testing divide!");
 }
 void modular()
 {
+	//for testing
+	strcpy(r, "testing modular!");
 }
