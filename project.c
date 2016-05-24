@@ -180,7 +180,7 @@ void remove_data(int n)
 bool check_var()
 {
 	int idx, i;
-	bool r = false;
+	bool r = false; //같은 이름을 가진 변수가 존재하지 않으면 false
 	for (idx = 0; idx < number_of_var; idx++)
 		if (var_name[idx] == input[0]) {
 			r = true;
@@ -198,6 +198,8 @@ void set_var()
 {
 	int i;
 	int idx = 0;
+	if (input[0] >= 'a' && input[0] <= 'z')
+		input[0] -= ('a' - 'A');
 	if (check_var()) {
 		int p_var;
 		for (p_var = 0; p_var < number_of_var; p_var++)
@@ -233,6 +235,8 @@ void read_var()
 
 int check_error()
 {
+	if (input[0] >= 'a' && input[0] <= 'z' && strlen(input) == 1)
+		input[0] -= ('a' - 'A');
 	int i, j;
 	int number_of_equal = 0;
 	bool error = false;
