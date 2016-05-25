@@ -23,7 +23,7 @@ void save_var(); //save명령을 처리하는 함수
 void input_string();
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
 
-				   //작업중인 함수들
+//작업중인 함수들
 void copy_left(int s, int e);
 void copy_right(int s, int e);
 void write_new_num(); //복합 연산시 숫자를 바꿔줄 함수
@@ -32,7 +32,7 @@ void ps_cal(); //문자열로 처리를 바꿔주면 void로
 void set_clear(); //left, right, r 배열 초기화
 void remove_data(int n); //data배열 초기화
 
-						 //사칙연산 함수들
+//사칙연산 함수들
 void plus(); //덧셈
 void minus(); //뺄셈
 void multiple(); //곱셈
@@ -54,7 +54,7 @@ int main()
 		else if (flag == 0) //command를 이미 처리했으므로
 			continue;
 		else if (flag == 1) //변수 선언하는 부분
-			set_var();
+			continue;
 		else if (flag == 2)
 			return 0;
 		else { //연산을 처리하는 부분
@@ -251,8 +251,10 @@ int check_error()
 			}
 		}
 	}
-	if (number_of_equal == 1)
+	if (number_of_equal == 1) {
+		set_var();
 		return 1; //변수선언
+	}
 	else if (strcmp(input, "clear") == 0) {
 		system("clear");
 		return 0;
