@@ -31,7 +31,8 @@ void change_equation(); //수식을 정리해주는 함수
 void ps_cal(); //문자열로 처리를 바꿔주면 void로
 void set_clear(); //left, right, r 배열 초기화
 void remove_data(int n); //data배열 초기화
-void print_result();//,찍기~제대로 작동은 할텐데 확인을 할 수 없다...
+void do_cal();
+void fun();
 
 //사칙연산 함수들
 void plus(); //덧셈
@@ -136,7 +137,7 @@ void write_new_num()
 
 void ps_cal()
 {
-	if (op == '+')
+	if (op == '*')
 		plus(); //덧셈함수 호출
 	else if (op == '-')
 		minus(); //마이너스 함수 호출
@@ -277,8 +278,13 @@ int check_error()
 		show_var();
 		return 0;
 	}
-	else if (strcmp(input, "end") == 0)
+	else if (!strcmp(input, "MyeongHo") || !strcmp(input, "Kim") || !strcmp(input, "KMH") || !strcmp(input, "IKSU") || !strcmp(input, "MYEONGHO") || !strcmp(input, "kmh") || !strcmp(input, "MSG")){
+		fun();
+		return 0;
+	}
+	else if (strcmp(input, "end") == 0) {
 		return 2; //종료
+	}
 	else if (error == true) {
 		if (strlen(input) == 1 && (input[0] >= 'A' && input[0] <= 'Z')) {
 			printf("= undefined.\n");
@@ -347,8 +353,32 @@ void input_string()
 
 void plus() //덧셈 함수
 {
-	//for testing
-	strcpy(r, "testing plus");
+	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
+	int idx = 1;
+	int len = 0;
+	for (int i = strlen(left) - 1; i >= 0; i--)
+		left_rev[idx++] = left[i] - '0';
+	idx = 1;
+	for (int i = strlen(right) - 1; i >= 0; i--)
+		right_rev[idx++] = right[i] - '0';
+	if(strlen(right) > strlen(left))
+		len = strlen(right);
+	else
+		len = strlen(left);
+	int r_tmp[101] = { 0 };
+	for (int i = 1; i <= len; i++) {
+		r_tmp[i] += left_rev[i] + right_rev[i];
+		if (r_tmp[i] >= 10) {
+			r_tmp[i + 1] = r_tmp[i] / 10;
+			r_tmp[i] %= 10;
+		}
+	}
+	idx = 0;
+	for (int i = len; i >= 1; i--) {
+		if(idx == 0 && r_tmp[i] == 0 && i != 1)
+			continue;	
+		r[idx++] = r_tmp[i] + '0';
+	}
 }
 void minus() //뺄셈
 {
@@ -395,7 +425,7 @@ void multiple()
 	idx = 0;
 	for (int i = len; i >= 1; i--) {
 		if(idx == 0 && r_tmp[i] == 0 && i != 1)
-		   continue;	
+			continue;	
 		r[idx++] = r_tmp[i] + '0';
 	}
 }
@@ -409,16 +439,34 @@ void modular()
 	//for testing
 	strcpy(r, "testing modular!");
 }
-void print_result(){
-	int length;
-	length = strlen(r); 
-	for(int i=0;i<length;i++){
-		printf("%c",r[i]);
-		if(i%3==0&&length%3==1&&i!=length-1)
-			printf(",");
-		if(i%3==1&&length%3==2&&i!=length-1)
-			printf(",");
-		if(i%3==2&&length%3==0&&i!=length-1)
-			printf(",");
-	}
+
+void do_cal()
+{
+	/*int s, e;
+	p -= 2;
+	e = p;
+	while (data[p] >= '0' && data[p] <= '9')
+		p--;
+	s = p + 1;
+	copy_right(s, e);
+	op = data[--p];
+	p -= 2;
+	e = p;
+	while (data[p] >= '0' && data[p] <= '9')
+		p--;
+	s = p + 1;
+	p++;
+	copy_left(s, e);
+	ps_cal();
+	write_new_num();
+	to_start_change = false;
+	need_change_num = false;
+	pass_this = true;
+	*/
+}
+void fun()
+{
+	printf("♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥\n");
+	set_clear();
+	remove_data(0);
 }
