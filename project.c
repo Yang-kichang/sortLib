@@ -33,6 +33,7 @@ void set_clear(); //left, right, r 배열 초기화
 void remove_data(int n); //data배열 초기화
 void do_cal();
 void fun();
+void print_result();
 
 //사칙연산 함수들
 void plus(); //덧셈
@@ -469,4 +470,18 @@ void fun()
 	printf("♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥\n");
 	set_clear();
 	remove_data(0);
+}
+
+void print_result(){
+	int length;
+	length = strlen(r); 
+	for(int i=0;i<length;i++){
+		printf("%c",r[i]);
+		if(i%3==0&&length%3==1&&i!=length-1)
+			printf(",");
+		if(i%3==1&&length%3==2&&i!=length-1)
+			printf(",");
+		if(i%3==2&&length%3==0&&i!=length-1)
+			printf(",");
+	}
 }
