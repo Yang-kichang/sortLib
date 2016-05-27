@@ -304,7 +304,12 @@ void show_var()
 	}
 	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
-		puts(var_value[i]);
+		//puts(var_value[i]);
+		for(int j = 0 ; j < strlen(var_value[i]) ; j++){
+			r[j] = var_value[i][j];
+		}
+		print_result();
+		printf("\n");
 	}
 }
 
