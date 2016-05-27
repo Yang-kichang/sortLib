@@ -31,6 +31,7 @@ void change_equation(); //수식을 정리해주는 함수
 void ps_cal(); //문자열로 처리를 바꿔주면 void로
 void set_clear(); //left, right, r 배열 초기화
 void remove_data(int n); //data배열 초기화
+void print_result();//,찍기~제대로 작동은 할텐데 확인을 할 수 없다...
 
 //사칙연산 함수들
 void plus(); //덧셈
@@ -407,4 +408,17 @@ void modular()
 {
 	//for testing
 	strcpy(r, "testing modular!");
+}
+void print_result(){
+	int length;
+	length = strlen(r); 
+	for(int i=0;i<length;i++){
+		printf("%c",r[i]);
+		if(i%3==0&&length%3==1&&i!=length-1)
+			printf(",");
+		if(i%3==1&&length%3==2&&i!=length-1)
+			printf(",");
+		if(i%3==2&&length%3==0&&i!=length-1)
+			printf(",");
+	}
 }
