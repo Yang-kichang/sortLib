@@ -23,17 +23,18 @@ void save_var(); //save명령을 처리하는 함수
 void input_string();
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
 
-//작업중인 함수들
+				   //작업중인 함수들
 void copy_left(int s, int e);
 void copy_right(int s, int e);
 void write_new_num(); //복합 연산시 숫자를 바꿔줄 함수
 void change_equation(); //수식을 정리해주는 함수
-void ps_cal(); //문자열로 처리를 바꿔주면 void로
+void ps_cal(); //연산하는 함수를 호출해주는 함수
 void set_clear(); //left, right, r 배열 초기화
-void remove_data(int n); //data배열 초기화
-void do_cal();
+void remove_data(int n); //data배열을 n번째 요소부터 초기화
+void do_calculate(); //정리된 수식을 계산하는 함수
 void fun();
 void print_result();
+int number_of_op();
 
 //사칙연산 함수들
 void plus(); //덧셈
@@ -61,13 +62,16 @@ int main()
 		else if (flag == 1) //변수 선언하는 부분
 			continue;
 		else if (flag == 2)
-			return 0;
+			return 0; 
 		else { //연산을 처리하는 부분
 			printf("= ");
 			change_equation();
-			//수식 정리 완료
-
-			//printf("\n");
+			set_clear();
+			//수식 정리 완료 
+			//수식은 data 배열에 저장되있음
+			do_calculate();
+			print_result();
+			printf("\n");
 		}
 	}
 	return 0;
@@ -99,14 +103,14 @@ void change_equation()
 			int s, e;
 			p -= 2;
 			e = p;
-			while (data[p] >= '0' && data[p] <= '9')
+			while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
 				p--;
 			s = p + 1;
 			copy_right(s, e);
 			op = data[--p];
 			p -= 2;
 			e = p;
-			while (data[p] >= '0' && data[p] <= '9')
+			while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
 				p--;
 			s = p + 1;
 			p++;
@@ -116,11 +120,12 @@ void change_equation()
 			to_start_change = false;
 			need_change_num = false;
 			pass_this = true;
+			data[p++] = ' ';
 		}
 		if (input[i] == '*' || input[i] == '/' || input[i] == '%') //*, /, % 연산자가 있으므로 우선적으로 계산할 필요가 있음
 			need_change_num = true;
 	}
-	puts(data);
+	//puts(data);
 }
 
 void write_new_num()
@@ -132,20 +137,20 @@ void write_new_num()
 	len = strlen(r);
 	for (i = 0; i < len; i++)
 		data[p++] = r[i];
-	data[p++] = ' ';
 	set_clear();
 }
 
 void ps_cal()
 {
-	if (op == '*')
+	if (op == '+')
 		plus(); //덧셈함수 호출
 	else if (op == '-')
 		minus(); //마이너스 함수 호출
 	else if (op == '*')
 		multiple(); //곱셈함수 호출
-	else if (op == '/')
+	else if (op == '/') {
 		divide(); //나눗셈 함수 호출
+	}
 	else if (op == '%')
 		modular(); //나머지연산 함수 호출
 }
@@ -251,12 +256,16 @@ int check_error()
 	for (i = 0; i < strlen(input); i++) {
 		if (input[i] == '=')
 			number_of_equal++;
-		if (!(input[i] == ' ' || input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-' || (input[i] >= '0' && input[i] <= '9')) || input[i] == '.') {
+		if (!(input[i] == ' ' || input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-' || (input[i] >= '0' && input[i] <= '9') || input[i] == '.')) {
 			error = true;
 			for (j = 0; j < number_of_var; j++) {
 				if (input[i] == var_name[j])
 					error = false;
 			}
+		}
+		if (input[i] == '/' && input[i + 1] == ' ' && input[i + 2] == '0' && (input[i + 3] == ' ' || input[i + 3] == '\0')) {
+			printf("error : divide by zero \n");
+			return 0;
 		}
 	}
 	if (number_of_equal == 1) {
@@ -279,7 +288,7 @@ int check_error()
 		show_var();
 		return 0;
 	}
-	else if (!strcmp(input, "MyeongHo") || !strcmp(input, "Kim") || !strcmp(input, "KMH") || !strcmp(input, "IKSU") || !strcmp(input, "MYEONGHO") || !strcmp(input, "kmh") || !strcmp(input, "MSG")){
+	else if (!strcmp(input, "MyeongHo") || !strcmp(input, "Kim") || !strcmp(input, "KMH") || !strcmp(input, "IKSU") || !strcmp(input, "MYEONGHO") || !strcmp(input, "kmh") || !strcmp(input, "MSG")) {
 		fun();
 		return 0;
 	}
@@ -305,7 +314,7 @@ void show_var()
 	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
 		//puts(var_value[i]);
-		for(int j = 0 ; j < strlen(var_value[i]) ; j++){
+		for (int j = 0; j <= strlen(var_value[i]); j++) {
 			r[j] = var_value[i][j];
 		}
 		print_result();
@@ -317,13 +326,17 @@ void load_var()
 {
 	FILE *save;
 	save = fopen("var.txt", "r");
+	if (save == NULL) {
+		printf("error : file doesn't exit. \n");
+		return;
+	}
 	char name, value[70];
 	while (fscanf(save, "%c = %s\n", &name, value) != EOF) {
 		input[0] = name;
 		input[1] = ' ';
 		input[2] = '=';
 		input[3] = ' ';
-		for (int i = 0; i < strlen(value); i++)
+		for (int i = 0; i <= strlen(value); i++)
 			input[i + 4] = value[i];
 		check_error();
 	}
@@ -367,30 +380,29 @@ void plus() //덧셈 함수
 	idx = 1;
 	for (int i = strlen(right) - 1; i >= 0; i--)
 		right_rev[idx++] = right[i] - '0';
-	if(strlen(right) > strlen(left))
-		len = strlen(right);
-	else
-		len = strlen(left);
+	len = strlen(left) + strlen(right);
 	int r_tmp[101] = { 0 };
 	for (int i = 1; i <= len; i++) {
 		r_tmp[i] += left_rev[i] + right_rev[i];
 		if (r_tmp[i] >= 10) {
-			r_tmp[i + 1] = r_tmp[i] / 10;
+			r_tmp[i + 1] += r_tmp[i] / 10;
 			r_tmp[i] %= 10;
 		}
 	}
 	idx = 0;
 	for (int i = len; i >= 1; i--) {
-		if(idx == 0 && r_tmp[i] == 0 && i != 1)
-			continue;	
+		if (idx == 0 && r_tmp[i] == 0 && i != 1)
+			continue;
 		r[idx++] = r_tmp[i] + '0';
 	}
 }
+
 void minus() //뺄셈
 {
 	//for testing
 	strcpy(r, "testing minus!");
 }
+
 void multiple()
 {
 	int tmp[101][101] = { 0 };
@@ -407,14 +419,14 @@ void multiple()
 		for (j = 1; j < i; j++)
 			tmp[i][j] = 0;
 		for (j = i; j < strlen(left) + i; j++) {
-			tmp[i][j] = (right_rev[i]) * (left_rev[j - i + 1]);
+			tmp[i][j] += (right_rev[i]) * (left_rev[j - i + 1]);
 			if (tmp[i][j] >= 10) {
-				tmp[i][j] = tmp[i][j] / 10;
+				tmp[i][j+1] += tmp[i][j] / 10;
 				tmp[i][j] %= 10;
 			}
 		}
 		if (j - 1 > len)
-			len = j - 1;
+			len = j;
 	}
 	int r_tmp[101] = { 0 };
 	for (int i = 1; i <= len; i++) {
@@ -422,54 +434,61 @@ void multiple()
 		for (int j = 1; j <= strlen(right); j++) {
 			sum += tmp[j][i];
 		}
-		r_tmp[i] = sum;
+		r_tmp[i] += sum;
 		if (r_tmp[i] >= 10) {
-			r_tmp[i + 1] = r_tmp[i] / 10;
+			r_tmp[i + 1] += r_tmp[i] / 10;
 			r_tmp[i] %= 10;
 		}
 	}
 	idx = 0;
 	for (int i = len; i >= 1; i--) {
-		if(idx == 0 && r_tmp[i] == 0 && i != 1)
-			continue;	
+		if (idx == 0 && r_tmp[i] == 0 && i != 1)
+			continue;
 		r[idx++] = r_tmp[i] + '0';
 	}
 }
+
 void divide()
 {
 	//for testing
 	strcpy(r, "testing divide!");
 }
+
 void modular()
 {
 	//for testing
 	strcpy(r, "testing modular!");
 }
 
-void do_cal()
+void do_calculate()
 {
-	/*int s, e;
-	p -= 2;
-	e = p;
-	while (data[p] >= '0' && data[p] <= '9')
-		p--;
-	s = p + 1;
-	copy_right(s, e);
-	op = data[--p];
-	p -= 2;
-	e = p;
-	while (data[p] >= '0' && data[p] <= '9')
-		p--;
-	s = p + 1;
-	p++;
-	copy_left(s, e);
-	ps_cal();
-	write_new_num();
-	to_start_change = false;
-	need_change_num = false;
-	pass_this = true;
-	*/
+	int cycle = number_of_op();
+	while (cycle) {
+		set_clear();
+		int s, e;
+		p = strlen(data) - 1;
+		e = p;
+		while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+			p--;
+		s = p + 1;
+		copy_right(s, e);
+		op = data[--p];
+		p -= 2;
+		e = p;
+		while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+			p--;
+		s = p + 1;
+		p++;
+		copy_left(s, e);
+		ps_cal();
+		write_new_num();
+		cycle--;
+	}
+	int len = strlen(data);
+	for (int i = 0; i <= len; i++)
+		r[i] = data[i];
 }
+
 void fun()
 {
 	printf("♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥\n");
@@ -477,16 +496,25 @@ void fun()
 	remove_data(0);
 }
 
-void print_result(){
+int number_of_op()
+{
+	int value_to_return = 0;
+	for (int i = 1; i < strlen(data); i++)
+		if ((data[i] == '*' || data[i] == '+' || data[i] == '/' || data[i] == '-' || data[i] == '%') && data[i - 1] == ' ' && data[i + 1] == ' ')
+			value_to_return++;
+	return value_to_return;
+}
+
+void print_result() {
 	int length;
-	length = strlen(r); 
-	for(int i=0;i<length;i++){
-		printf("%c",r[i]);
-		if(i%3==0&&length%3==1&&i!=length-1)
+	length = strlen(r);
+	for (int i = 0; i < length; i++) {
+		printf("%c", r[i]);
+		if (i % 3 == 0 && length % 3 == 1 && i != length - 1)
 			printf(",");
-		if(i%3==1&&length%3==2&&i!=length-1)
+		if (i % 3 == 1 && length % 3 == 2 && i != length - 1)
 			printf(",");
-		if(i%3==2&&length%3==0&&i!=length-1)
+		if (i % 3 == 2 && length % 3 == 0 && i != length - 1)
 			printf(",");
 	}
 }
