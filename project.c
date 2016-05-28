@@ -11,7 +11,6 @@ char data[1000];
 int p = 0;
 char left[60], right[60];
 char r[1000]; //연산의 결과를 저장할 배열
-
 char op;
 
 bool check_var(); //변수를 정의할 때 중복되는지 체크하는 함수
@@ -20,23 +19,23 @@ void read_var(); //연산을 하다가 변수를 읽어올 때 사용할 함수
 void show_var(); //VAR명령을 처리하는 함수
 void load_var(); //load명령을 처리하는 함수
 void save_var(); //save명령을 처리하는 함수
-void input_string();
+void input_string();//엔터를 치기전 까지 문자를 입력받는 함수
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
 
-				   //작업중인 함수들
+/*작업중인 함수들*/
 void copy_left(int s, int e);
 void copy_right(int s, int e);
-void write_new_num(); //복합 연산시 숫자를 바꿔줄 함수
+void write_new_num(); //연산한 결과를 수식에 써주는 함수
 void change_equation(); //수식을 정리해주는 함수
 void ps_cal(); //연산하는 함수를 호출해주는 함수
 void set_clear(); //left, right, r 배열 초기화
 void remove_data(int n); //data배열을 n번째 요소부터 초기화
 void do_calculate(); //정리된 수식을 계산하는 함수
 void fun();
-void print_result();
-int number_of_op();
+void print_result();//,를 찍어주기 위한 함수
+int number_of_op(); //입력받은 수식의 연산자의갯수를 조사하는 함수
 
-//사칙연산 함수들
+/*사칙연산 함수들*/
 void plus(); //덧셈
 void minus(); //뺄셈
 void multiple(); //곱셈
@@ -70,7 +69,9 @@ int main()
 			//수식 정리 완료 
 			//수식은 data 배열에 저장되있음
 			do_calculate();
+			//정리한 수식을 계산
 			print_result();
+			//계산 결과 출력
 			printf("\n");
 		}
 	}
@@ -238,6 +239,8 @@ void set_var()
 void read_var()
 {
 	int i, idx;
+	if (data[p] >= 'a' && data[p] <= 'z')
+		data[p] -= ('a' - 'A');
 	for (idx = 0; idx < number_of_var; idx++)
 		if (var_name[idx] == data[p])
 			break;
@@ -381,19 +384,20 @@ void plus() //덧셈 함수
 	for (int i = strlen(right) - 1; i >= 0; i--)
 		right_rev[idx++] = right[i] - '0';
 	len = strlen(left) + strlen(right);
-	int r_tmp[101] = { 0 };
+	int r_rev[101] = { 0 };
 	for (int i = 1; i <= len; i++) {
-		r_tmp[i] += left_rev[i] + right_rev[i];
-		if (r_tmp[i] >= 10) {
-			r_tmp[i + 1] += r_tmp[i] / 10;
-			r_tmp[i] %= 10;
+		r_rev[i] += left_rev[i] + right_rev[i];
+		if (r_rev[i] >= 10) {
+			r_rev[i + 1] += r_rev[i] / 10;
+			r_rev[i] %= 10;
 		}
 	}
+	//초등학교때 덧셈하듯이 각 자리를 더해주고 필요하면 자릴수를 올려줌
 	idx = 0;
 	for (int i = len; i >= 1; i--) {
-		if (idx == 0 && r_tmp[i] == 0 && i != 1)
+		if (idx == 0 && r_rev[i] == 0 && i != 1)
 			continue;
-		r[idx++] = r_tmp[i] + '0';
+		r[idx++] = r_rev[i] + '0';
 	}
 }
 
@@ -409,18 +413,22 @@ void multiple()
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1;
 	int len = 0;
+	/*
+	자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
+	계산의 편의를 위해 int형 사용
+	*/
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
 	for (int i = strlen(right) - 1; i >= 0; i--)
 		right_rev[idx++] = right[i] - '0';
-	for (int i = 1; i <= strlen(right); i++) {
+	for (int i = 1; i <= strlen(right); i++) { //right의 길이만큼 1의 자리부터 시작
 		int j;
 		for (j = 1; j < i; j++)
 			tmp[i][j] = 0;
 		for (j = i; j < strlen(left) + i; j++) {
-			tmp[i][j] += (right_rev[i]) * (left_rev[j - i + 1]);
-			if (tmp[i][j] >= 10) {
+			tmp[i][j] += (right_rev[i]) * (left_rev[j - i + 1]); //right의 각 자리에 있는 수와 left를 곱해줌 
+			if (tmp[i][j] >= 10) { //자릿수를 올려주는 부분
 				tmp[i][j+1] += tmp[i][j] / 10;
 				tmp[i][j] %= 10;
 			}
@@ -428,23 +436,25 @@ void multiple()
 		if (j - 1 > len)
 			len = j;
 	}
-	int r_tmp[101] = { 0 };
-	for (int i = 1; i <= len; i++) {
+	//마치 초등학교때 각 자리마다 곱셈을 하는것 처럼
+	int r_rev[101] = { 0 };
+	for (int i = 1; i <= len; i++) { //각 자릿수마다 값을 알기위해서 더해줌
 		int sum = 0;
 		for (int j = 1; j <= strlen(right); j++) {
 			sum += tmp[j][i];
 		}
-		r_tmp[i] += sum;
-		if (r_tmp[i] >= 10) {
-			r_tmp[i + 1] += r_tmp[i] / 10;
-			r_tmp[i] %= 10;
+		r_rev[i] += sum;
+		if (r_rev[i] >= 10) {
+			r_rev[i + 1] += r_rev[i] / 10;
+			r_rev[i] %= 10;
 		}
 	}
+	//초등학교때 곱셈한 것을 다시 더하는것 처럼
 	idx = 0;
 	for (int i = len; i >= 1; i--) {
-		if (idx == 0 && r_tmp[i] == 0 && i != 1)
+		if (idx == 0 && r_rev[i] == 0 && i != 1)
 			continue;
-		r[idx++] = r_tmp[i] + '0';
+		r[idx++] = r_rev[i] + '0';
 	}
 }
 
