@@ -414,9 +414,9 @@ void multiple()
 	int idx = 1;
 	int len = 0;
 	/*
-	자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
-	계산의 편의를 위해 int형 사용
-	*/
+	   자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
+	   계산의 편의를 위해 int형 사용
+	   */
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
