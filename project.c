@@ -33,7 +33,9 @@ void remove_data(int n); //data배열을 n번째 요소부터 초기화
 void do_calculate(); //정리된 수식을 계산하는 함수
 void fun();
 void print_result();//,를 찍어주기 위한 함수
-int number_of_op(); //입력받은 수식의 연산자의갯수를 조사하는 함수
+int number_of_op_for_data(); //입력받은 수식의 연산자의갯수를 조사하는 함수
+int number_of_op_for_input(); //입력받은 수식의 연산자의갯수를 조사하는 함수
+int number_of_num_for_input(); //입력받은 수식의 연산자의갯수를 조사하는 함수
 
 /*사칙연산 함수들*/
 void plus(); //덧셈
@@ -305,6 +307,8 @@ int check_error()
 		}
 		return -1; //error출력
 	}
+	if(number_of_op_for_input() + 1 != number_of_num_for_input())
+		return -1;
 	return 3; //연산하기
 }
 
@@ -472,7 +476,7 @@ void modular()
 
 void do_calculate()
 {
-	int cycle = number_of_op();
+	int cycle = number_of_op_for_data();
 	while (cycle) {
 		set_clear();
 		int s, e;
@@ -506,12 +510,41 @@ void fun()
 	remove_data(0);
 }
 
-int number_of_op()
+int number_of_op_for_data()
 {
 	int value_to_return = 0;
 	for (int i = 1; i < strlen(data); i++)
 		if ((data[i] == '*' || data[i] == '+' || data[i] == '/' || data[i] == '-' || data[i] == '%') && data[i - 1] == ' ' && data[i + 1] == ' ')
 			value_to_return++;
+	return value_to_return;
+}
+
+int number_of_op_for_input()
+{
+	int value_to_return = 0;
+	for (int i = 1; i < strlen(input); i++)
+		if ((input[i] == '*' || input[i] == '+' || input[i] == '/' || input[i] == '-' || input[i] == '%') && input[i - 1] == ' ' && input[i + 1] == ' ')
+			value_to_return++;
+	return value_to_return;
+}
+
+int number_of_num_for_input()
+{
+	int value_to_return = 0;
+	int idx = 0;
+	while (idx < strlen(input)) {
+		bool flag = false;
+		while ((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z')) {
+			flag = true;
+			idx++;
+			if((input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z'))
+				break;
+		}
+		if (flag)
+			value_to_return++;
+		while (!((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z')))
+			idx++;
+	}
 	return value_to_return;
 }
 
