@@ -9,9 +9,18 @@ int number_of_var = 0;
 char input[1000];
 char data[1000];
 int p = 0;
-char left[60], right[60];
 char r[1000]; //연산의 결과를 저장할 배열
 char op;
+
+/*소수점과 부호 구현을 위한 부분*/
+bool left_possitive_num = true;
+bool right_possitive_num = true;
+bool left_has_point = false;
+bool right_has_point = false;
+int pos_of_left_point = 0;
+int pos_of_right_point = 0;
+char left[60], right[60];
+char left_after_point[60], right_after_point[60];
 
 bool check_var(); //변수를 정의할 때 중복되는지 체크하는 함수
 void set_var(); //변수를 선언해주는 함수
@@ -21,7 +30,7 @@ void load_var(); //load명령을 처리하는 함수
 void save_var(); //save명령을 처리하는 함수
 void input_string();//엔터를 치기전 까지 문자를 입력받는 함수
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
-
+				   
 /*작업중인 함수들*/
 void copy_left(int s, int e);
 void copy_right(int s, int e);
@@ -63,7 +72,7 @@ int main()
 		else if (flag == 1) //변수 선언하는 부분
 			continue;
 		else if (flag == 2)
-			return 0; 
+			return 0;
 		else { //연산을 처리하는 부분
 			printf("= ");
 			change_equation();
@@ -72,9 +81,9 @@ int main()
 			//수식은 data 배열에 저장되있음
 			do_calculate();
 			//정리한 수식을 계산
-			print_result();
-			//계산 결과 출력
-			printf("\n");
+			puts(r);
+			//print_result();
+			//printf("\n");
 		}
 	}
 	return 0;
@@ -106,14 +115,17 @@ void change_equation()
 			int s, e;
 			p -= 2;
 			e = p;
-			while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+			//while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+			while (data[p] != ' ' && p >= 0)
 				p--;
 			s = p + 1;
 			copy_right(s, e);
 			op = data[--p];
-			p -= 2;
+			while (!(data[p] >= '0' && data[p] <= '9'))
+				p--;
 			e = p;
-			while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+			//while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+			while (data[p] != ' ' && p >= 0)
 				p--;
 			s = p + 1;
 			p++;
@@ -161,15 +173,57 @@ void ps_cal()
 void copy_right(int s, int e)
 {
 	int i, idx = 0;
-	for (i = s; i <= e; i++)
-		right[idx++] = data[i];
+	if (data[s] == '-') {
+		right_possitive_num = false;
+		s++;
+	}
+	for (i = s; i <= e; i++) {
+		if (!right_has_point)
+			right[idx++] = data[i];
+		else
+			right_after_point[idx++] = data[i];
+		if (data[i] == '.') {
+			right[idx - 1] = '\0';
+			pos_of_right_point = idx;
+			right_has_point = true;
+			idx = 0;
+		}
+	}
+	printf("\nright_has_point : %d \n", right_has_point);
+	printf("양수 : %d \n", right_possitive_num);
+	printf("right : ");
+	puts(right);
+	printf("right_after_point : ");
+	puts(right_after_point);
+	printf("\n\n\n");
 }
 
 void copy_left(int s, int e)
 {
 	int i, idx = 0;
-	for (i = s; i <= e; i++)
-		left[idx++] = data[i];
+	if (data[s] == '-') {
+		left_possitive_num = false;
+		s++;
+	}
+	for (i = s; i <= e; i++) {
+		if (!left_has_point)
+			left[idx++] = data[i];
+		else
+			left_after_point[idx++] = data[i];
+		if (data[i] == '.') {
+			left[idx - 1] = '\0';
+			pos_of_left_point = idx;
+			left_has_point = true;
+			idx = 0;
+		}
+	}
+	printf("\nleft_has_point : %d \n", left_has_point);
+	printf("양수 : %d \n", left_possitive_num);
+	printf("left : ");
+	puts(left);
+	printf("left_after_point : ");
+	puts(left_after_point);
+	printf("\n\n\n");
 }
 
 void set_clear()
@@ -307,7 +361,7 @@ int check_error()
 		}
 		return -1; //error출력
 	}
-	if(number_of_op_for_input() + 1 != number_of_num_for_input())
+	if (number_of_op_for_input() + 1 != number_of_num_for_input())
 		return -1;
 	return 3; //연산하기
 }
@@ -418,9 +472,9 @@ void multiple()
 	int idx = 1;
 	int len = 0;
 	/*
-	   자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
-	   계산의 편의를 위해 int형 사용
-	   */
+	자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
+	계산의 편의를 위해 int형 사용
+	*/
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
@@ -433,7 +487,7 @@ void multiple()
 		for (j = i; j < strlen(left) + i; j++) {
 			tmp[i][j] += (right_rev[i]) * (left_rev[j - i + 1]); //right의 각 자리에 있는 수와 left를 곱해줌 
 			if (tmp[i][j] >= 10) { //자릿수를 올려주는 부분
-				tmp[i][j+1] += tmp[i][j] / 10;
+				tmp[i][j + 1] += tmp[i][j] / 10;
 				tmp[i][j] %= 10;
 			}
 		}
@@ -482,14 +536,15 @@ void do_calculate()
 		int s, e;
 		p = strlen(data) - 1;
 		e = p;
-		while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+		while (data[p] != ' ' && p >= 0)
 			p--;
 		s = p + 1;
 		copy_right(s, e);
 		op = data[--p];
-		p -= 2;
+		while (!(data[p] >= '0' && data[p] <= '9'))
+			p--;
 		e = p;
-		while ((data[p] >= '0' && data[p] <= '9') || data[p] == '.')
+		while (data[p] != ' ' && p >= 0)
 			p--;
 		s = p + 1;
 		p++;
@@ -537,7 +592,7 @@ int number_of_num_for_input()
 		while ((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z')) {
 			flag = true;
 			idx++;
-			if((input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z'))
+			if ((input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z'))
 				break;
 		}
 		if (flag)
