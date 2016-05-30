@@ -480,6 +480,35 @@ void minus() //뺄셈
 //		 {
 //			r_rev[i + 1] += r_rev[i] / 10;
 //		 }
+
+
+	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
+	int idx = 1;
+	int len = 0;
+	for (int i = strlen(left) - 1; i >= 0; i--)
+		left_rev[idx++] = left[i] - '0';
+	idx = 1;
+	for (int i = strlen(right) - 1; i >= 0; i--)
+		right_rev[idx++] = right[i] - '0';
+	len = strlen(left) + strlen(right);
+	int r_rev[101] = { 0 };
+	for (int i = 1; i <= len; i++) {
+		r_rev[i] += left_rev[i] - right_rev[i];
+		}
+
+		for(int i = len; i>= 1; i--){
+			if(r_rev[i]<0)
+			{
+				r_rev[i]=(-1)*r_rev[i];
+				r_rev[i-1]=r_rev[i-1]-1;
+			}
+		}
+		//1.각 배열 자리수 끼리 뺄셈 연산
+		//2.각 배열자리를  스캔
+		//3.만약 각 자리의 숫자가 음수이면
+		//부호를 바꿔주고 윗 자리수의 값을 1을 뺀다
+
+			
 }
 
 void multiple()
