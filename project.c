@@ -427,7 +427,10 @@ void plus() //덧셈 함수
 	idx = 1;
 	for (int i = strlen(right) - 1; i >= 0; i--)
 		right_rev[idx++] = right[i] - '0';
-	len = strlen(left) + strlen(right);
+	if(strlen(right) > strlen(left))
+		len = strlen(right) + 1;
+	else
+		len = strlen(left) + 1;
 	int r_rev[101] = { 0 };
 	for (int i = 1; i <= len; i++) {
 		r_rev[i] += left_rev[i] + right_rev[i];
@@ -455,7 +458,10 @@ void minus() //뺄셈
 	idx = 1;
 	for (int i = strlen(right) - 1; i >= 0; i--)
 		right_rev[idx++] = right[i] - '0';
-	len = strlen(left) + strlen(right);
+	if(strlen(right) > strlen(left))
+		len = strlen(right) + 1;
+	else
+		len = strlen(left) + 1;
 	int r_rev[101] = { 0 };
 	for (int i = 1; i <= len; i++) {
 		r_rev[i] += left_rev[i] - right_rev[i];
