@@ -579,13 +579,6 @@ void do_calculate()
       r[i] = data[i];
 }
 
-void fun()
-{
-   printf("♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥\n");
-   set_clear();
-   remove_data(0);
-}
-
 int number_of_op_for_data()
 {
    int value_to_return = 0;
