@@ -81,9 +81,9 @@ int main()
          //수식은 data 배열에 저장되있음
          do_calculate();
          //정리한 수식을 계산
-         puts(r);
-         //print_result();
-         //printf("\n");
+         
+         print_result();
+         printf("\n");
       }
    }
    return 0;
@@ -361,9 +361,8 @@ void show_var()
       printf("%c = ", var_name[i]);
       for (int j = 0; j <= strlen(var_value[i]); j++) 
          r[j] = var_value[i][j];
-      puts(r);
-      //print_result();
-      //printf("\n");
+      print_result();
+      printf("\n");
    }
 }
 
@@ -626,8 +625,7 @@ int number_of_num_for_input()
 }
 
 void print_result() {
-   int length,point,i,yes;
-   char no[100];
+   int length,point,i,yes=0;
    length = strlen(r);
    for(i=0;i<length;i++){
       if(r[i]=='.'){
@@ -651,8 +649,10 @@ void print_result() {
       for(i = point+1; i < length; i++){
          printf("%c", r[i]);
          if (i % 3 == 0 && (point+1) % 3 == 1 && i != point - 1){
-            printf(",");
-            
+            if(i!=length-1){
+			 printf(",");
+			}
+			 
          }
          else if (i % 3 == 1 && (point+1) % 3 == 2 && i != point - 1)
             printf(",");
