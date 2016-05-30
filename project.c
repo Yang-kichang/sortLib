@@ -332,10 +332,6 @@ int check_error()
       show_var();
       return 0;
    }
-   else if (!strcmp(input, "MyeongHo") || !strcmp(input, "Kim") || !strcmp(input, "KMH") || !strcmp(input, "IKSU") || !strcmp(input, "MYEONGHO") || !strcmp(input, "kmh") || !strcmp(input, "MSG")) {
-      fun();
-      return 0;
-   }
    else if (strcmp(input, "end") == 0) {
       return 2; //종료
    }
