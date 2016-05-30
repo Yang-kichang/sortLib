@@ -30,7 +30,7 @@ void load_var(); //load명령을 처리하는 함수
 void save_var(); //save명령을 처리하는 함수
 void input_string();//엔터를 치기전 까지 문자를 입력받는 함수
 int check_error(); //error체크를 하면서 입력받은 명령의 종류를 처리해주는 함수
-				   
+
 /*작업중인 함수들*/
 void copy_left(int s, int e);
 void copy_right(int s, int e);
@@ -189,13 +189,6 @@ void copy_right(int s, int e)
 			idx = 0;
 		}
 	}
-	printf("\nright_has_point : %d \n", right_has_point);
-	printf("양수 : %d \n", right_possitive_num);
-	printf("right : ");
-	puts(right);
-	printf("right_after_point : ");
-	puts(right_after_point);
-	printf("\n\n\n");
 }
 
 void copy_left(int s, int e)
@@ -217,13 +210,6 @@ void copy_left(int s, int e)
 			idx = 0;
 		}
 	}
-	printf("\nleft_has_point : %d \n", left_has_point);
-	printf("양수 : %d \n", left_possitive_num);
-	printf("left : ");
-	puts(left);
-	printf("left_after_point : ");
-	puts(left_after_point);
-	printf("\n\n\n");
 }
 
 void set_clear()
@@ -462,24 +448,24 @@ void plus() //덧셈 함수
 void minus() //뺄셈
 {
 	//for testing
-//	strcpy(r, "testing minus!");
-	
-//	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
-//	int idx = 1;
-//	int len = 0;
-//	for (int i = strlen(left) - 1; i >= 0; i--)
-//		left_rev[idx++] = left[i] - '0';
-//	idx = 1;
-//	for (int i = strlen(right) - 1; i >= 0; i--)
-//		right_rev[idx++] = right[i] - '0';
-//	len = strlen(left) + strlen(right);
-//	int r_rev[101] = { 0 };
-//	for (int i = 1; i <= len; i++) {
-//		r_rev[i] += left_rev[i] - right_rev[i];
-//		if (r_rev[i] <0)
-//		 {
-//			r_rev[i + 1] += r_rev[i] / 10;
-//		 }
+	//	strcpy(r, "testing minus!");
+
+	//	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
+	//	int idx = 1;
+	//	int len = 0;
+	//	for (int i = strlen(left) - 1; i >= 0; i--)
+	//		left_rev[idx++] = left[i] - '0';
+	//	idx = 1;
+	//	for (int i = strlen(right) - 1; i >= 0; i--)
+	//		right_rev[idx++] = right[i] - '0';
+	//	len = strlen(left) + strlen(right);
+	//	int r_rev[101] = { 0 };
+	//	for (int i = 1; i <= len; i++) {
+	//		r_rev[i] += left_rev[i] - right_rev[i];
+	//		if (r_rev[i] <0)
+	//		 {
+	//			r_rev[i + 1] += r_rev[i] / 10;
+	//		 }
 
 
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
@@ -494,21 +480,25 @@ void minus() //뺄셈
 	int r_rev[101] = { 0 };
 	for (int i = 1; i <= len; i++) {
 		r_rev[i] += left_rev[i] - right_rev[i];
-		}
+	}
 
-		for(int i = len; i>= 1; i--){
-			if(r_rev[i]<0)
-			{
-				r_rev[i]=(-1)*r_rev[i];
-				r_rev[i-1]=r_rev[i-1]-1;
-			}
+	for(int i = len; i>= 1; i--){
+		if(r_rev[i]<0)
+		{
+			r_rev[i]=(-1)*r_rev[i];
+			r_rev[i-1]=r_rev[i-1]-1;
 		}
-		//1.각 배열 자리수 끼리 뺄셈 연산
-		//2.각 배열자리를  스캔
-		//3.만약 각 자리의 숫자가 음수이면
-		//부호를 바꿔주고 윗 자리수의 값을 1을 뺀다
-
-			
+	}
+	idx = 0;
+	for (int i = len; i >= 1; i--) {
+		if (idx == 0 && r_rev[i] == 0 && i != 1)
+			continue;
+		r[idx++] = r_rev[i] + '0';
+	}
+	//1.각 배열 자리수 끼리 뺄셈 연산
+	//2.각 배열자리를  스캔
+	//3.만약 각 자리의 숫자가 음수이면
+	//부호를 바꿔주고 윗 자리수의 값을 1을 뺀다
 }
 
 void multiple()
@@ -518,9 +508,9 @@ void multiple()
 	int idx = 1;
 	int len = 0;
 	/*
-	자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
-	계산의 편의를 위해 int형 사용
-	*/
+	   자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
+	   계산의 편의를 위해 int형 사용
+	   */
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
