@@ -474,16 +474,20 @@ void minus() //뺄셈
 			r_rev[i-1]=r_rev[i-1]-1;
 		}
 	}
+
+
+
 	idx = 0;
 	for (int i = len; i >= 1; i--) {
 		if (idx == 0 && r_rev[i] == 0 && i != 1)
 			continue;
-		r[idx++] = r_rev[i] + '0';
+			r[idx++] = r_rev[i] + '0';
 	}
 	//1.각 배열 자리수 끼리 뺄셈 연산
 	//2.각 배열자리를  스캔
 	//3.만약 각 자리의 숫자가 음수이면
 	//부호를 바꿔주고 윗 자리수의 값을 1을 뺀다
+	//4.다시 배열 순서를 stack을 활용하여 다시 바꾼다.
 }
 
 void multiple()
