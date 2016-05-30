@@ -81,7 +81,8 @@ int main()
 			//수식은 data 배열에 저장되있음
 			do_calculate();
 			//정리한 수식을 계산
-			puts(r);
+			print_result();
+			//put(r);
 			//print_result();
 			//printf("\n");
 		}
@@ -629,15 +630,49 @@ int number_of_num_for_input()
 }
 
 void print_result() {
-	int length;
+	int length,point,i,yes;
+	char no[100];
 	length = strlen(r);
-	for (int i = 0; i < length; i++) {
-		printf("%c", r[i]);
-		if (i % 3 == 0 && length % 3 == 1 && i != length - 1)
-			printf(",");
-		if (i % 3 == 1 && length % 3 == 2 && i != length - 1)
-			printf(",");
-		if (i % 3 == 2 && length % 3 == 0 && i != length - 1)
-			printf(",");
+	for(i=0;i<length;i++){
+		if(r[i]=='.'){
+			point=i;
+			yes=1;
+		}
+	}
+	if(yes==1){
+		for (i = 0; i < point; i++) {
+			printf("%c", r[i]);
+			if (i % 3 == 0 && point % 3 == 1 && i != point - 1)
+				printf(",");
+			else if (i % 3 == 1 && point % 3 == 2 && i != point - 1)
+				printf(",");
+			else if (i % 3 == 2 && point % 3 == 0 && i != point - 1)
+				printf(",");
+		}
+
+		if(point!=length)
+			printf(".");
+		for(i = point+1; i < length; i++){
+			printf("%c", r[i]);
+			if (i % 3 == 0 && (point+1) % 3 == 1 && i != point - 1){
+				printf(",");
+				
+			}
+			else if (i % 3 == 1 && (point+1) % 3 == 2 && i != point - 1)
+				printf(",");
+			else if (i % 3 == 2 && (point+1) % 3 == 0 && i != point - 1)
+				printf(",");
+		}
+	}
+	else{
+		for (int i = 0; i < length; i++) {
+			printf("%c", r[i]);
+			if (i % 3 == 0 && length % 3 == 1 && i != length - 1)
+				printf(",");
+			if (i % 3 == 1 && length % 3 == 2 && i != length - 1)
+				printf(",");
+			if (i % 3 == 2 && length % 3 == 0 && i != length - 1)
+				printf(",");
+		}
 	}
 }
