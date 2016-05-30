@@ -464,22 +464,22 @@ void minus() //뺄셈
 	//for testing
 //	strcpy(r, "testing minus!");
 	
-	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
-	int idx = 1;
-	int len = 0;
-	for (int i = strlen(left) - 1; i >= 0; i--)
-		left_rev[idx++] = left[i] - '0';
-	idx = 1;
-	for (int i = strlen(right) - 1; i >= 0; i--)
-		right_rev[idx++] = right[i] - '0';
-	len = strlen(left) + strlen(right);
-	int r_rev[101] = { 0 };
-	for (int i = 1; i <= len; i++) {
-		r_rev[i] += left_rev[i] - right_rev[i];
-		if (r_rev[i] <0)
-		 {
-			r_rev[i + 1] += r_rev[i] / 10;
-		 }
+//	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
+//	int idx = 1;
+//	int len = 0;
+//	for (int i = strlen(left) - 1; i >= 0; i--)
+//		left_rev[idx++] = left[i] - '0';
+//	idx = 1;
+//	for (int i = strlen(right) - 1; i >= 0; i--)
+//		right_rev[idx++] = right[i] - '0';
+//	len = strlen(left) + strlen(right);
+//	int r_rev[101] = { 0 };
+//	for (int i = 1; i <= len; i++) {
+//		r_rev[i] += left_rev[i] - right_rev[i];
+//		if (r_rev[i] <0)
+//		 {
+//			r_rev[i + 1] += r_rev[i] / 10;
+//		 }
 }
 
 void multiple()
