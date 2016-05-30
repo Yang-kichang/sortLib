@@ -600,7 +600,7 @@ int number_of_op_for_input()
 {
    int value_to_return = 0;
    for (int i = 1; i < strlen(input); i++)
-      if ((input[i] == '*' || input[i] == '+' || input[i] == '/' || input[i] == '-' || input[i] == '%') && input[i - 1] == ' ' && input[i + 1] == ' ')
+      if ((input[i] == '*' || input[i] == '+' || input[i] == '/' || input[i] == '-' || input[i] == '%') && input[i - 1] == ' ' && (input[i + 1] == ' ' || input[i + 1] == '\0'))
          value_to_return++;
    return value_to_return;
 }
