@@ -22,6 +22,7 @@ int pos_of_right_point = 0;
 char left[60], right[60];
 char left_after_point[60], right_after_point[60];
 
+bool compare();
 bool check_var(); //변수를 정의할 때 중복되는지 체크하는 함수
 void set_var(); //변수를 선언해주는 함수
 void read_var(); //연산을 하다가 변수를 읽어올 때 사용할 함수
