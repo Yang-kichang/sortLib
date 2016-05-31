@@ -224,7 +224,7 @@ void set_clear()
    for( i = 0; i<= 60; i++)
 	   left_after_point[i] = '\0';
       for( i = 0; i<= 60; i++)
-	   left_after_point[i] = '\0';
+	   right_after_point[i] = '\0';
    for (i = 0; i <= len; i++)
       left[i] = '\0';
    len = strlen(right);
