@@ -81,7 +81,6 @@ int main()
 			//수식은 data 배열에 저장되있음
 			do_calculate();
 			//정리한 수식을 계산
-
 			print_result();
 			printf("\n");
 		}
@@ -146,7 +145,6 @@ void write_new_num()
 {
 	int i = 0;
 	int len = 0;
-
 	remove_data(p);
 	len = strlen(r);
 	for (i = 0; i < len; i++)
@@ -162,9 +160,8 @@ void ps_cal()
 		minus(); //마이너스 함수 호출
 	else if (op == '*')
 		multiple(); //곱셈함수 호출
-	else if (op == '/') {
+	else if (op == '/') 
 		divide(); //나눗셈 함수 호출
-	}
 	else if (op == '%')
 		modular(); //나머지연산 함수 호출
 }
@@ -213,8 +210,7 @@ void copy_left(int s, int e)
 
 void set_clear()
 {
-	<<<<<<< HEAD
-		int i;
+	int i;
 	int len = strlen(left);
 	for (i = 0; i <= len; i++)
 		left[i] = '\0';
@@ -224,28 +220,18 @@ void set_clear()
 	len = strlen(r);
 	for (i = 0; i <= len; i++)
 		r[i] = '\0';
-	=======
-		int i;
-	int len = strlen(left);
+	len = strlen(left_after_point);
+	for( i = 0; i<= len; i++)
+		left_after_point[i] = '\0';
+	len = strlen(right_after_point);
+	for( i = 0; i<= len; i++)
+		right_after_point[i] = '\0';
 	left_possitive_num = true;
 	right_possitive_num = true;
 	left_has_point = false;
 	right_has_point = false;
 	pos_of_left_point = 0;
 	pos_of_right_point = 0;//매번 초기화
-	for( i = 0; i<= 60; i++)
-		left_after_point[i] = '\0';
-	for( i = 0; i<= 60; i++)
-		right_after_point[i] = '\0';
-	for (i = 0; i <= len; i++)
-		left[i] = '\0';
-	len = strlen(right);
-	for (i = 0; i <= len; i++)
-		right[i] = '\0';
-	len = strlen(r);
-	for (i = 0; i <= len; i++)
-		r[i] = '\0';
-	>>>>>>> e375505c6c88b149d67a61720a01dfc26a3b9ba8
 }
 
 void remove_data(int n)
@@ -315,67 +301,8 @@ void read_var()
 
 int check_error()
 {
-	<<<<<<< HEAD
-		if (input[0] >= 'a' && input[0] <= 'z' && strlen(input) == 1)
-			input[0] -= ('a' - 'A');
-	int i, j;
-	int number_of_equal = 0;
-	bool error = false;
-	for (i = 0; i < strlen(input); i++) {
-		if (input[i] == '=')
-			number_of_equal++;
-		if (!(input[i] == ' ' || input[i] == '*' || input[i] == '/' || input[i] == '%' || input[i] == '+' || input[i] == '-' || (input[i] >= '0' && input[i] <= '9') || input[i] == '.')) {
-			error = true;
-			for (j = 0; j < number_of_var; j++) {
-				if (input[i] == var_name[j])
-					error = false;
-			}
-		}
-		if (input[i] == '/' && input[i + 1] == ' ' && input[i + 2] == '0' && (input[i + 3] == ' ' || input[i + 3] == '\0')) {
-			printf("error : divide by zero \n");
-			return 0;
-		}
-	}
-	if (number_of_equal == 1) {
-		set_var();
-		return 1; //변수선언
-	}
-	else if (strcmp(input, "clear") == 0) {
-		system("clear");
-		return 0;
-	}
-	else if (strcmp(input, "load") == 0) {
-		load_var();
-		return 0;
-	}
-	else if (strcmp(input, "save") == 0) {
-		save_var();
-		return 0;
-	}
-	else if (strcmp(input, "VAR") == 0) {
-		show_var();
-		return 0;
-	}
-	else if (!strcmp(input, "MyeongHo") || !strcmp(input, "Kim") || !strcmp(input, "KMH") || !strcmp(input, "IKSU") || !strcmp(input, "MYEONGHO") || !strcmp(input, "kmh") || !strcmp(input, "MSG")) {
-		fun();
-		return 0;
-	}
-	else if (strcmp(input, "end") == 0) {
-		return 2; //종료
-	}
-	else if (error == true) {
-		if (strlen(input) == 1 && (input[0] >= 'A' && input[0] <= 'Z')) {
-			printf("= undefined.\n");
-			return 0;
-		}
-		return -1; //error출력
-	}
-	if (number_of_op_for_input() + 1 != number_of_num_for_input())
-		return -1;
-	return 3; //연산하기
-	=======
-		if (input[0] >= 'a' && input[0] <= 'z' && strlen(input) == 1)
-			input[0] -= ('a' - 'A');
+	if (input[0] >= 'a' && input[0] <= 'z' && strlen(input) == 1)
+		input[0] -= ('a' - 'A');
 	int i, j;
 	int number_of_equal = 0;
 	bool error = false;
@@ -427,15 +354,13 @@ int check_error()
 	if (number_of_op_for_input() + 1 != number_of_num_for_input())
 		return -1;
 	return 3; //연산하기
-	>>>>>>> e375505c6c88b149d67a61720a01dfc26a3b9ba8
 }
 
 void show_var()
 {
 	int i;
-	if (number_of_var == 0) {
+	if (number_of_var == 0) 
 		printf("정의된 변수 없음 \n");
-	}
 	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
 		for (int j = 0; j <= strlen(var_value[i]); j++) 
@@ -538,11 +463,11 @@ void minus() //뺄셈
 	else
 		len = strlen(left) + 1;
 	int r_rev[101] = { 0 };
-	for (int i = 1; i <= len; i++) {
+	for (int i = 1; i <= len; i++) 
 		r_rev[i] += left_rev[i] - right_rev[i];
-	}
 	for(int i = len; i>= 1; i--){
-		if(r_rev[i]<0){
+		if(r_rev[i]<0)
+		{
 			r_rev[i]=(-1)*r_rev[i];
 			r_rev[i-1]=r_rev[i-1]-1;
 		}
@@ -562,72 +487,26 @@ void minus() //뺄셈
 
 void multiple()
 {
-	<<<<<<< HEAD
-		int tmp[101][101] = { 0 };
+	int tmp[101][101] = { 0 };
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1;
 	int len = 0;
 	/*
 	   자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
 	   계산의 편의를 위해 int형 사용
-	 */
-	for (int i = strlen(left) - 1; i >= 0; i--)
-		left_rev[idx++] = left[i] - '0';
-	idx = 1;
-	for (int i = strlen(right) - 1; i >= 0; i--)
-		right_rev[idx++] = right[i] - '0';
-	for (int i = 1; i <= strlen(right); i++) { //right의 길이만큼 1의 자리부터 시작
-		int j;
-		for (j = 1; j < i; j++)
-			tmp[i][j] = 0;
-		for (j = i; j < strlen(left) + i; j++) {
-			tmp[i][j] += (right_rev[i]) * (left_rev[j - i + 1]); //right의 각 자리에 있는 수와 left를 곱해줌 
-			if (tmp[i][j] >= 10) { //자릿수를 올려주는 부분
-				tmp[i][j + 1] += tmp[i][j] / 10;
-				tmp[i][j] %= 10;
-			}
-		}
-		if (j - 1 > len)
-			len = j;
-	}
-	//마치 초등학교때 각 자리마다 곱셈을 하는것 처럼
-	int r_rev[101] = { 0 };
-	for (int i = 1; i <= len; i++) { //각 자릿수마다 값을 알기위해서 더해줌
-		int sum = 0;
-		for (int j = 1; j <= strlen(right); j++) {
-			sum += tmp[j][i];
-		}
-		r_rev[i] += sum;
-		if (r_rev[i] >= 10) {
-			r_rev[i + 1] += r_rev[i] / 10;
-			r_rev[i] %= 10;
-		}
-	}
-	//초등학교때 곱셈한 것을 다시 더하는것 처럼
-	idx = 0;
-	for (int i = len; i >= 1; i--) {
-		if (idx == 0 && r_rev[i] == 0 && i != 1)
-			continue;
-		r[idx++] = r_rev[i] + '0';
-	}
-	=======
-		int tmp[101][101] = { 0 };
-	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
-	int idx = 1;
-	int len = 0;
-	/*
-	   자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
-	   계산의 편의를 위해 int형 사용
-	 */
+	   */
 
 	strcat(right,right_after_point);
 	strcat(left,left_after_point);
 
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
+
 	idx = 1;
+
 	for (int i = strlen(right) - 1; i >= 0; i--)
 		right_rev[idx++] = right[i] - '0';
+
 	for (int i = 1; i <= strlen(right); i++) { //right의 길이만큼 1의 자리부터 시작
 		int j;
 		for (j = 1; j < i; j++)
@@ -662,7 +541,6 @@ void multiple()
 			continue;
 		r[idx++] = r_rev[i] + '0';
 	}
-	>>>>>>> e375505c6c88b149d67a61720a01dfc26a3b9ba8
 }
 
 void divide()
@@ -707,16 +585,6 @@ void do_calculate()
 		r[i] = data[i];
 }
 
-	<<<<<<< HEAD
-void fun()
-{
-	printf("♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥♡♥\n");
-	set_clear();
-	remove_data(0);
-}
-
-=======
-	>>>>>>> e375505c6c88b149d67a61720a01dfc26a3b9ba8
 int number_of_op_for_data()
 {
 	int value_to_return = 0;
@@ -730,7 +598,7 @@ int number_of_op_for_input()
 {
 	int value_to_return = 0;
 	for (int i = 1; i < strlen(input); i++)
-		if ((input[i] == '*' || input[i] == '+' || input[i] == '/' || input[i] == '-' || input[i] == '%') && input[i - 1] == ' ' && (input[i + 1] == ' ' || input[i + 1] == '\0'))
+		if ((input[i] == '*' || input[i] == '+' || input[i] == '/' || input[i] == '-' || input[i] == '%') && input[i - 1] == ' ' && input[i + 1] == ' ')
 			value_to_return++;
 	return value_to_return;
 }
@@ -780,10 +648,8 @@ void print_result() {
 		for(i = point+1; i < length; i++){
 			printf("%c", r[i]);
 			if (i % 3 == 0 && (point+1) % 3 == 1 && i != point - 1){
-				if(i!=length-1){
+				if(i!=length-1)
 					printf(",");
-				}
-
 			}
 			else if (i % 3 == 1 && (point+1) % 3 == 2 && i != point - 1)
 				printf(",");
