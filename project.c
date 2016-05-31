@@ -600,6 +600,34 @@ bool check_var()
    }
    return r;
 }
+/*
+true : left is bigger than right
+false : right is bigger than left
+*/
+bool compare()
+{
+   bool r = true;
+   int len_of_left = strlen(left);
+   int len_of_right = strlen(right);
+   if(!left_possitive_num && !right_possitive_num)
+      r = !r;
+   if(left_possitive_num != right_possitive_num) {
+      if(left_possitive_num)
+         return r;
+      else
+         return !r;
+   }
+   if(len_of_left > len_of_right)
+      return r;
+   else if(len_of_left < len_of_right)
+      return !r;
+   for(int i = 0; i < len_of_left; i++) {
+      if(left[i] > right[i])
+         return r;
+      else if(left[i] < right[i])
+         return !r;
+   }
+}
 
 void set_var()
 {
