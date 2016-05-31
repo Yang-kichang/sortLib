@@ -228,10 +228,15 @@ void multiple()
       }
    }
    //초등학교때 곱셈한 것을 다시 더하는것 처럼
+   int pos = strlen(left_after_point) + strlen(right_after_point);
    idx = 0;
+   if(left_possitive_num != right_possitive_num)
+      r[idx++] = '-';
    for (int i = len; i >= 1; i--) {
-      if (idx == 0 && r_rev[i] == 0 && i != 1)
+      if ((idx == 0 || (idx == 1 && r[0] == '-')) && r_rev[i] == 0 && i != 1)
          continue;
+    if(i == pos) 
+       r[idx++] = '.';
       r[idx++] = r_rev[i] + '0';
    }
 }
