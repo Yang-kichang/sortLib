@@ -37,7 +37,7 @@ void copy_right(int s, int e);
 void write_new_num(); //연산한 결과를 수식에 써주는 함수
 void change_equation(); //수식을 정리해주는 함수
 void ps_cal(); //연산하는 함수를 호출해주는 함수
-void set_clear(); //left, right, r 배열 초기화
+void set_clear(); //거의 모든 전역변수 초기화
 void remove_data(int n); //data배열을 n번째 요소부터 초기화
 void do_calculate(); //정리된 수식을 계산하는 함수
 void fun();
@@ -215,6 +215,16 @@ void set_clear()
 {
    int i;
    int len = strlen(left);
+   	left_possitive_num = true;
+	right_possitive_num = true;
+	left_has_point = false;
+	right_has_point = false;
+	pos_of_left_point = 0;
+	pos_of_right_point = 0;//매번 초기화
+   for( i = 0; i<= 60; i++)
+	   left_after_point[i] = '\0';
+      for( i = 0; i<= 60; i++)
+	   left_after_point[i] = '\0';
    for (i = 0; i <= len; i++)
       left[i] = '\0';
    len = strlen(right);
@@ -492,6 +502,10 @@ void multiple()
       자릿수를 맞춰주기 편하려고 left와 right 숫자를 거꾸로 뒤집어줌
       계산의 편의를 위해 int형 사용
       */
+	  
+	  	  strcat(right,right_after_point);
+	  strcat(left,left_after_point);
+	  
    for (int i = strlen(left) - 1; i >= 0; i--)
       left_rev[idx++] = left[i] - '0';
    idx = 1;
