@@ -176,6 +176,8 @@ void print_result() {
 		}
 		
 		}
+	if(is_r_minus_num)
+		printf("-");	
 		
 	for(int i = strlen(to_print_thingsi_rev)-1; i>=0 ;i--)
 		printf("%c", to_print_thingsi_rev[i]);
