@@ -138,51 +138,50 @@ void modular()
 /******************************************Do not edit******************************************************/
 
 void print_result() {
-    int length, point, i, yes = 0;
-    length = strlen(r);
-    for (i = 0; i<length; i++) {
-        if (r[i] == '.') {
-            point = i;
-            yes = 1;
-        }
-    }
-    if (yes == 1) {
-        for (i = 0; i < point; i++) {
-            printf("%c", r[i]);
-            if (i % 3 == 0 && point % 3 == 1 && i != point - 1)
-                printf(",");
-            else if (i % 3 == 1 && point % 3 == 2 && i != point - 1)
-                printf(",");
-            else if (i % 3 == 2 && point % 3 == 0 && i != point - 1)
-                printf(",");
-        }
+	bool is_r_minus_num = false;
+	bool does_r_have_point = false;
+	int pos_point;
+	if(r[0] == '-')
+		is_r_minus_num = true;
+	for(int i = 0; i < strlen(r); i++)
+		if(r[i]=='.')
+		does_r_have_point = true;
+		
+	char to_print_thingsi_rev[100];
+	int idx = 0,n=0,pass_point=0,pass_point_yes=0,k=0; 
+	for(int i = strlen(r)-1 ; i>= is_r_minus_num;i--){
+		to_print_thingsi_rev[idx++] = r[i];
+		if(pass_point_yes==1)
+			k++;
+		if(i==is_r_minus_num){
+			to_print_thingsi_rev[idx]='\0';
+			continue;
+		}
+		if(r[i-1]=='.'){
+			to_print_thingsi_rev[idx++]='.';
+			i--;
+			pass_point_yes=1;
+			n=0;
+		}
+		
+		
+		else if(idx==4*n+3&&pass_point_yes==0){
+			to_print_thingsi_rev[idx++]=',';
+			n++;
+		}
 
-        if (point != length)
-            printf(".");
-        for (i = point + 1; i < length; i++) {
-            printf("%c", r[i]);
-            if (i % 3 == 0 && (point + 1) % 3 == 1 && i != point - 1) {
-                if (i != length - 1)
-                    printf(",");
-            }
-            else if (i % 3 == 1 && (point + 1) % 3 == 2 && i != point - 1)
-                printf(",");
-            else if (i % 3 == 2 && (point + 1) % 3 == 0 && i != point - 1)
-                printf(",");
-        }
-    }
-    else {
-        for (int i = 0; i < length; i++) {
-            printf("%c", r[i]);
-            if (i % 3 == 0 && length % 3 == 1 && i != length - 1)
-                printf(",");
-            if (i % 3 == 1 && length % 3 == 2 && i != length - 1)
-                printf(",");
-            if (i % 3 == 2 && length % 3 == 0 && i != length - 1)
-                printf(",");
-        }
-    }
-}
+		else if(k==3*n+3&&pass_point_yes==1){
+			to_print_thingsi_rev[idx++]=',';
+			n++;
+		}
+		
+		}
+		
+	for(int i = strlen(to_print_thingsi_rev)-1; i>=0 ;i--)
+		printf("%c", to_print_thingsi_rev[i]);
+			
+		
+	}
 
 void do_calculate()
 {
