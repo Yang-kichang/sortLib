@@ -126,8 +126,7 @@ void minus() //뺄셈
 
 void divide()
 {
-   //for testing
-   strcpy(r, "testing divide!");
+
 }
 
 void modular()
@@ -633,6 +632,10 @@ int check_error()
          }
       }
       if (input[i] == '/' && input[i + 1] == ' ' && input[i + 2] == '0' && (input[i + 3] == ' ' || input[i + 3] == '\0')) {
+         printf("error : divide by zero \n");
+         return 0;
+      }
+      if (input[i] == '%' && input[i + 1] == ' ' && input[i + 2] == '0' && (input[i + 3] == ' ' || input[i + 3] == '\0')) {
          printf("error : divide by zero \n");
          return 0;
       }
