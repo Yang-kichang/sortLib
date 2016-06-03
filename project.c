@@ -132,7 +132,7 @@ void divide()
 
 void modular()
 {
-   while(compare())
+   while(compare() || !strcmp(left, right))
    {
       minus();
       strcpy(left, r);
