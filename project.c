@@ -262,8 +262,12 @@ int number_of_num_for_input()
 		}
 		if (flag)
 			value_to_return++;
-		while (!((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z')))
-			idx++;
+		while (!((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z'))) {
+			if(input[idx + 1] != '\0')
+				idx++;
+			else
+				break;
+		}
 	}
 	return value_to_return;
 }
