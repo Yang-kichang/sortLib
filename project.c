@@ -54,12 +54,44 @@ void minus(); //뺄셈
 void multiple(); //곱셈
 void divide(); //나눗셈
 void modular(); //나머지
+void swap();
+
+void swap()
+{
+	int t;
+	for(int i = 0; i<60; i++){
+		t = left[i];
+		left[i] = right[i];
+		right[i] = t;	
+}
+	t = left_possitive_num;
+	left_possitive_num = right_possitive_num;
+	right_possitive_num = t;
+}
+		
 
 void plus() //덧셈 함수
 {
+	if(left_possitive_num == true && right_possitive_num == false){
+		right_possitive_num = true;
+		minus();
+		return;
+	}
+	else if(left_possitive_num == false && right_possitive_num ==true){
+		swap();
+		right_possitive_num = true;
+		minus();
+		return;
+	}
+	else if(left_possitive_num == false && right_possitive_num == false){
+		r[0] = '-';
+		printf("-");
+	}
+
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1;
 	int len = 0;
+
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
@@ -88,9 +120,46 @@ void plus() //덧셈 함수
 
 void minus() //뺄셈
 {
+	if(left_possitive_num == true && right_possitive_num == false){
+	   right_possitive_num = true;
+	   plus();
+	   return;
+	}
+    else if(left_possitive_num == false && right_possitive_num == true){
+	   right_possitive_num = false;
+	   plus();
+	   return;
+	}
+	else if(left_possitive_num == false && right_possitive_num == false){
+		         r[0] = '-';
+		    }
+
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1;
 	int len = 0;
+	int big = 0;
+
+	for(int i = 0; i < 60; i++){
+		if(left[i] > right[i]){
+			big = 1;
+			break;
+	}
+		else if(left[i] < right[i]){
+			big = 2;
+			break;
+	}
+}
+
+	if(big == 2){
+		swap();
+		if(r[0] == '-')
+			r[0] = 0;
+		else  
+			r[0] = '-';
+	}
+	if(r[0] == '-')
+		printf("-");
+
 	for (int i = strlen(left) - 1; i >= 0; i--)
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
@@ -126,30 +195,10 @@ void minus() //뺄셈
 
 void divide()
 {
-    int n=1,int_r[50]={0},float_r[9],len=1,idx=0;
+	//for testing
+	strcpy(r, "testing divide!");
+}
 
-    
-
-    while(compare()||(!strcmp(left,right)))
-    {
-        minus();
-        int_r[len]=n++;
-        if(n>=10){
-            len++;
-            n=0;
-        }
-        strcpy(left,r); 
-        remove_r(0);
-    }
-
-	for (int i = len; i >= 1; i--) {
-		if (idx == 0 && int_r[i] == 0 && i != 1)
-			continue;
-		r[idx++] = int_r[i] + '0';
-  }      
-   
-  }    
-    
 void modular()
 {
 	char right_origin[100];
@@ -282,12 +331,8 @@ int number_of_num_for_input()
 		}
 		if (flag)
 			value_to_return++;
-		while (!((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z'))) {
-			if(input[idx + 1] != '\0')
-				idx++;
-			else
-				break;
-		}
+		while (!((input[idx] >= '0' && input[idx] <= '9') || input[idx] == '.' || (input[idx] >= 'A' && input[idx] <= 'Z') || (input[idx] >= 'a' && input[idx] <= 'z')))
+			idx++;
 	}
 	return value_to_return;
 }
