@@ -54,9 +54,38 @@ void minus(); //뺄셈
 void multiple(); //곱셈
 void divide(); //나눗셈
 void modular(); //나머지
+void swap();
+
+void swap(){
+	int t;
+	for(int i = 0 ; i < 60; i++){
+		t = left[i];
+		left[i] = right[i];
+		right[i] = t;
+	}
+	t = left_possitive_num;
+	left_possitive_num = right_possitive_num;
+	right_possitive_num = t;
+}
 
 void plus() //덧셈 함수
 {
+    if(left_possitive_num == true && right_possitive_num == false){
+		right_possitive_num = true;
+		minus();
+		return;
+	}
+	else if(left_possitive_num == false && right_possitive_num == true){
+		swap();
+		right_possitive_num = true;
+		minus();
+		return;
+	}
+	else if(left_possitive_num == false && right_possitive_num == false){
+		r[0] = '-';
+		printf("-");
+	}
+	
     int left_rev[100] = { 0 }, right_rev[100] = { 0 };
     int idx = 1;
     int len = 0;
@@ -88,6 +117,40 @@ void plus() //덧셈 함수
 
 void minus() //뺄셈
 {
+    if(left_possitive_num == true && right_possitive_num == false){
+   		right_possitive_num = true;
+   		plus();
+   		return;
+   }
+   else if(left_possitive_num == false && right_possitive_num == true){
+   		right_possitive_num = false;
+   		plus();
+   		return;
+   }
+   else if(left_possitive_num == false && right_possitive_num == false){
+   		r[0] = '-';
+   }
+   int left_rev[100] = { 0 }, right_rev[100] = { 0 };
+   int big = 0;
+   for(int i = 0; i < 60 ;i++){
+   		if(left[i] > right[i]){
+   			big = 1;
+   			break;
+   		}
+   		else if(left[i] < right[i]){
+   			big = 2;
+   			break;
+   		}
+   }
+   if(big == 2){
+   		swap();
+   		if(r[0] == '-')
+   			r[0] = 0;
+   		else
+   			r[0] = '-';
+   }
+   if(r[0] == '-')
+   		printf("-");
     int left_rev[100] = { 0 }, right_rev[100] = { 0 };
     int idx = 1;
     int len = 0;
