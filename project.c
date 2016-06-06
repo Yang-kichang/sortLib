@@ -130,7 +130,7 @@ void minus() //뺄셈
    else if(left_possitive_num == false && right_possitive_num == false){
    		r[0] = '-';
    }
-   int left_rev[100] = { 0 }, right_rev[100] = { 0 };
+   
    int big = 0;
    for(int i = 0; i < 60 ;i++){
    		if(left[i] > right[i]){
