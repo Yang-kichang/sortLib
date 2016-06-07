@@ -154,6 +154,10 @@ void minus() //뺄셈
     int left_rev[100] = { 0 }, right_rev[100] = { 0 };
     int idx = 1;
     int len = 0;
+    if(!compare()) {
+        printf("-");
+        swap();
+    }
     for (int i = strlen(left) - 1; i >= 0; i--)
         left_rev[idx++] = left[i] - '0';
     idx = 1;
@@ -214,9 +218,8 @@ void divide()
         remove_r(0);
     }
 
-    for (int i = len; i >= 0; i--) {
+    for (int i = len; i >= 0; i--) 
         r[idx++]=int_r[i]+'0';
-    }
 }      
 
 
