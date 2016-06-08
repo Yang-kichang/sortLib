@@ -89,6 +89,33 @@ void plus() //덧셈 함수
     int left_rev[100] = { 0 }, right_rev[100] = { 0 };
     int idx = 1;
     int len = 0;
+	int pos_point,i;
+		if(strlen(left_after_point)>strlen(right_after_point)){
+		while(1){
+			if(strlen(left_after_point)==strlen(right_after_point)){
+				right_after_point[strlen(right_after_point)+i]='\0';
+				break;
+			}
+			right_after_point[strlen(right_after_point)+i]='0';
+			i++;
+		}
+	}
+	
+	if(strlen(left_after_point)<strlen(right_after_point)){
+		while(1){
+			if(strlen(left_after_point)==strlen(right_after_point)){
+				left_after_point[strlen(left_after_point)+i]='\0';
+				break;
+			}
+			left_after_point[strlen(left_after_point)+i]='0';
+			i++;
+		}
+	}
+	
+	pos_point=strlen(left_after_point);
+								
+	strcat(right, right_after_point);
+    strcat(left, left_after_point);
     for (int i = strlen(left) - 1; i >= 0; i--)
         left_rev[idx++] = left[i] - '0';
     idx = 1;
