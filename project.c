@@ -9,11 +9,11 @@ char var_name[11];
 int number_of_var = 0;
 
 
-/*µÎ ¼öÀÇ ´ë¼Ò¸¦ ºñ±³ÇÏ´Â ÇÔ¼ö*/
+/*ë‘ ìˆ˜ì˜ ëŒ€ì†Œë¥¼ ë¹„êµí•˜ëŠ” í•¨ìˆ˜*/
 bool compare_func(char first[], char second[]);
 
 
-/*º¯¼ö¿Í °ü·ÃµÈ ºÎºĞ*/
+/*ë³€ìˆ˜ì™€ ê´€ë ¨ëœ ë¶€ë¶„*/
 bool check_var(char name);
 void set_var(char input[]);
 void read_var(char data[], int p);
@@ -22,14 +22,14 @@ void load_var();
 void save_var();
 
 
-/*ÀÔ·ÂµÈ µ¥ÀÌÅÍ Ã¼Å©ÇÏ´Â ºÎºĞ*/
+/*ì…ë ¥ëœ ë°ì´í„° ì²´í¬í•˜ëŠ” ë¶€ë¶„*/
 void input_string(char input[]);
 int check_error(char input[]);
 int number_of_op(char target[]);
 int number_of_num(char target[]);
 
 
-/*»çÄ¢¿¬»êÀ» À§ÇÑ ºÎºĞ*/
+/*ì‚¬ì¹™ì—°ì‚°ì„ ìœ„í•œ ë¶€ë¶„*/
 bool ps_cal(char left[], char right[], char op, char result[]);
 
 
@@ -39,16 +39,16 @@ void multiple(char left[], char right[], char result[]);
 bool divide(char left[], char right[], char result[]);
 bool modular(char left[], char right[], char result[]);
 bool dose_it_have_point(char target[], char after_point[]);
-/*¿¬»ê°ú »ó°ü¾ø´Â ºÎºĞ*/
+/*ì—°ì‚°ê³¼ ìƒê´€ì—†ëŠ” ë¶€ë¶„*/
 void my_print(char[]);
 
 
-/*ÃÊ±âÈ­¿Í °ü·ÃµÈ ºÎºĞ*/
+/*ì´ˆê¸°í™”ì™€ ê´€ë ¨ëœ ë¶€ë¶„*/
 void clear_all(char[], int value, int target_size);
 void clear_after_n(char[], int value, int from, int target_szie);
 
 
-/*¿¬»ê ¿ì¼±¼øÀ§ & ¿¬»êÀ» Ã³¸®ÇÏ´Â ºÎºĞ*/
+/*ì—°ì‚° ìš°ì„ ìˆœìœ„ & ì—°ì‚°ì„ ì²˜ë¦¬í•˜ëŠ” ë¶€ë¶„*/
 void get_ans(char input[], char result[]);
 int get_num(char from[], char target[], int p);
 bool next_op(char input[], int p);
@@ -168,7 +168,7 @@ void read_var(char data[], int p) {
 void show_var() {
 	int i;
 	if (!number_of_var)
-		puts("Á¤ÀÇµÈ º¯¼ö ¾øÀ½");
+		puts("ì •ì˜ëœ ë³€ìˆ˜ ì—†ìŒ");
 	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
 		//my_print(var_value[i]);
@@ -233,7 +233,7 @@ int check_error(char input[]) {
 	}
 	if (number_of_equal == 1) {
 		set_var(input);
-		return 1; //º¯¼ö¼±¾ğ
+		return 1; //ë³€ìˆ˜ì„ ì–¸
 	}
 	else if (strcmp(input, "clear") == 0) {
 		system("clear");
@@ -259,7 +259,7 @@ int check_error(char input[]) {
 			printf("= undefined.\n");
 			return 0;
 		}
-		return 1; //errorÃâ·Â
+		return 1; //errorì¶œë ¥
 	}
 	if (number_of_op(input) + 1 != number_of_num(input))
 		return 1;
@@ -415,7 +415,7 @@ inline void multiple(char first[], char second[], char r[]) {
 	idx = 0;
 	for (int i = !ddaihao_second; i < strlen(second); i++)
 		tmp2[idx++] = second[i];
-	//ºÎÈ£ Á¤¸®ÇØÁÖ±â ¿Ï·á
+	//ë¶€í˜¸ ì •ë¦¬í•´ì£¼ê¸° ì™„ë£Œ
 	int tmp[100][100] = { 0 };
 	char first_after_point[11] = { 0 };
 	char second_after_point[11] = { 0 };
@@ -552,6 +552,7 @@ bool dose_it_have_point(char target[], char after_point[]) {
 			break;
 		}
 	}
+	i++;
 	int idx = 0;
 	for (; i < len; i++)
 		after_point[idx++] = target[i];
