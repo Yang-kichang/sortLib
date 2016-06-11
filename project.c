@@ -41,7 +41,7 @@ bool modular(char left[], char right[], char result[]);
 bool dose_it_have_point(char target[], char after_point[]);
 /*연산과 상관없는 부분*/
 void print_result(char[]);
-
+bool check_remove_zero(char data[]);
 
 /*초기화와 관련된 부분*/
 void clear_all(char[], int value, int target_size);
@@ -287,24 +287,26 @@ int number_of_op(char target[]) {
 	return value_to_return;
 }
 int number_of_num(char target[]) {
-	int r = 0;
+	int value_to_return = 0;
 	int idx = 0;
 	while (idx < strlen(target)) {
 		bool flag = false;
-		while ((target[idx] >= '0' && target[idx] <= '9') || target[idx] == '.' || (target[idx] >= 'A' && target[idx] <= 'Z') || (target[idx] >= 'A' && target[idx] <= 'Z')) {
+		while ((target[idx] >= '0' && target[idx] <= '9') || target[idx] == '.' || (target[idx] >= 'A' && target[idx] <= 'Z') || (target[idx] >= 'a' && target[idx] <= 'z')) {
 			flag = true;
 			idx++;
+			if ((target[idx] >= 'A' && target[idx] <= 'Z') || (target[idx] >= 'a' && target[idx] <= 'z'))
+				break;
 		}
 		if (flag)
-			r++;
-		while (!(target[idx] >= '0' && target[idx] <= '9') || target[idx] == '.' || (target[idx] >= 'A' && target[idx] <= 'Z') || (target[idx] >= 'A' && target[idx] <= 'Z')) {
+			value_to_return++;
+		while (!((target[idx] >= '0' && target[idx] <= '9') || target[idx] == '.' || (target[idx] >= 'A' && target[idx] <= 'Z') || (target[idx] >= 'a' && target[idx] <= 'z'))) {
 			if (target[idx + 1] != '\0')
 				idx++;
 			else
 				break;
 		}
 	}
-	return r;
+	return value_to_return;
 }
 bool ps_cal(char left[], char right[], char op, char result[]) {
 	bool is_error = false;
@@ -587,8 +589,10 @@ void get_ans(char input[], char result[]) {
 	bool is_left_Ready = false, is_right_Ready = false, is_op_Ready = false;
 	bool not_now = true;
 	char left[100] = { 0 }, right[100] = { 0 }, op;
-	int first;
+	int first, finish = false;
 	for (int i = 0; i < strlen(input); i++) {
+		if (i == strlen(input) - 1)
+			finish = true;
 		idx_data = strlen(data);
 		data[idx_data] = input[i];
 		if ((data[idx_data] >= 'A' && data[idx_data] <= 'Z') || (data[idx_data] >= 'a' && data[idx_data] <= 'z')) {
@@ -624,32 +628,34 @@ void get_ans(char input[], char result[]) {
 			clear_all(left, 0, sizeof(left));
 			clear_all(right, 0, sizeof(right));
 			clear_all(result, 0, strlen(result));
-			i -= 1;
-			data[strlen(data) - 1] = '\0';
+			if (!finish) {
+				i -= 1;
+				data[strlen(data) - 1] = '\0';
+			}
 		}
 	}
 	if (data[strlen(data) - 1] == 32) //알수없는 공백 제거
 		data[strlen(data) - 1] = 0;
-	
-	for(int i=strlen(data)-1;i>=0;i--){//1000002 * 2.0 = 2000004.0경우 제외하고 소수점 뒤 0 제거
-		if(data[i]!='0')
+
+	for (int i = strlen(data) - 1; i >= 0; i--) {//1000002 * 2.0 = 2000004.0경우 제외하고 소수점 뒤 0 제거
+		if (data[i] != '0')
 			break;
-		else if(data[i]=='0'&&data[i-1]!='.')
-			data[i]=0;
+		else if (data[i - 1] != '.' && data[i] == '0' && check_remove_zero(data))
+			data[i] = 0;
 	}
 	strcpy(result, data);
 	bool have_point = false;
-	int pos_point=0;
-	for(int i=strlen(result)-1,j=0;i>=0;i--,j++){
-		if(result[i]=='.'){
-			have_point=true;
-			pos_point=j;
+	int pos_point = 0;
+	for (int i = strlen(result) - 1, j = 0; i >= 0; i--, j++) {
+		if (result[i] == '.') {
+			have_point = true;
+			pos_point = j;
 		}
 	}
-	if(have_point==true){     //소수점 뒤 9자리까지만 출력 (반올림x)
-		if(pos_point>=10){
-			for(int i=strlen(result)-1,j=0;j<pos_point-9;j++,i--)
-				result[i]=0;
+	if (have_point == true) {     //소수점 뒤 9자리까지만 출력 (반올림x)
+		if (pos_point >= 10) {
+			for (int i = strlen(result) - 1, j = 0; j<pos_point - 9; j++, i--)
+				result[i] = 0;
 		}
 	}
 }
@@ -674,7 +680,6 @@ bool next_op(char input[], int p) {
 		return false;
 	return true;
 }
-
 void print_result(char result[]) {
 	bool is_r_minus_num = false;
 	bool does_r_have_point = false;
@@ -684,7 +689,6 @@ void print_result(char result[]) {
 	for (int i = 0; i < strlen(result); i++)
 		if (result[i] == '.')
 			does_r_have_point = true;
-
 	char to_print_thingsi_rev[100];
 	int idx = 0, n = 0, pass_point = 0, pass_point_yes = 0, k = 0;
 	for (int i = strlen(result) - 1; i >= is_r_minus_num; i--) {
@@ -701,18 +705,14 @@ void print_result(char result[]) {
 			pass_point_yes = 1;
 			n = 0;
 		}
-
-
 		else if (idx == 4 * n + 3 && pass_point_yes == 0) {
 			to_print_thingsi_rev[idx++] = ',';
 			n++;
 		}
-
 		else if (k == 3 * n + 3 && pass_point_yes == 1) {
 			to_print_thingsi_rev[idx++] = ',';
 			n++;
 		}
-
 	}
 	if (is_r_minus_num)
 		printf("-");
@@ -721,4 +721,11 @@ void print_result(char result[]) {
 		printf("%c", to_print_thingsi_rev[i]);
 	printf("\n");
 
+}
+bool check_remove_zero(char target[]) {
+	bool flag = false;
+	for (int i = 0; i < strlen(target); i++)
+		if (target[i] == '.')
+			flag = true;
+	return flag;
 }
