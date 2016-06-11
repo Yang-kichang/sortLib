@@ -40,7 +40,7 @@ bool divide(char left[], char right[], char result[]);
 bool modular(char left[], char right[], char result[]);
 bool dose_it_have_point(char target[], char after_point[]);
 /*연산과 상관없는 부분*/
-void print_result(char []);
+void print_result(char[]);
 
 
 /*초기화와 관련된 부분*/
@@ -234,6 +234,9 @@ int check_error(char input[]) {
 		set_var(input);
 		return 0; //변수선언
 	}
+	else if (strcmp(input, "end") == 0) {
+		return -1; //종료
+	}
 	else if (strcmp(input, "clear") == 0) {
 		system("clear");
 		return 0;
@@ -250,9 +253,6 @@ int check_error(char input[]) {
 		show_var();
 		return 0;
 	}
-	else if (strcmp(input, "end") == 0) {
-		return -1;
-	}
 	else if (error == true) {
 		if (strlen(input) == 1 && (input[0] >= 'A' && input[0] <= 'Z')) {
 			printf("= undefined.\n");
@@ -262,14 +262,14 @@ int check_error(char input[]) {
 	}
 	if (number_of_op(input) + 1 != number_of_num(input))
 		return 1;
-	return 2;
+	return 2; //연산하기
 }
 int number_of_op(char target[]) {
-	int r = 0;
-	for (int i = 0; i < strlen(target); i++)
-		if (target[i] == '+' || target[i] == '-' || target[i] == '*' || target[i] == '/' || target[i] == '%')
-			r++;
-	return r;
+	int value_to_return = 0;
+	for (int i = 1; i < strlen(target); i++)
+		if ((target[i] == '*' || target[i] == '+' || target[i] == '/' || target[i] == '-' || target[i] == '%') && target[i - 1] == ' ' && target[i + 1] == ' ')
+			value_to_return++;
+	return value_to_return;
 }
 int number_of_num(char target[]) {
 	int r = 0;
@@ -400,7 +400,7 @@ inline void minus(char left[], char right[], char result[]) {
 	}
 }
 inline void multiple(char first[], char second[], char r[]) {
-	
+
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
 	bool ddaihao_first = true;
 	if (first[0] == '-')
@@ -436,7 +436,7 @@ inline void multiple(char first[], char second[], char r[]) {
 	int second_rev[100] = { 0 }, first_rev[100] = { 0 }, r_rev[100] = { 0 };
 	for (int i = strlen(tmp2) - 1; i >= 0; i--)
 		second_rev[idx++] = tmp2[i] - '0';
-	
+
 	idx = 1;
 	for (int i = strlen(tmp1) - 1; i >= 0; i--)
 		first_rev[idx++] = tmp1[i] - '0';
@@ -465,7 +465,7 @@ inline void multiple(char first[], char second[], char r[]) {
 			r_rev[i] %= 10;
 		}
 	}
-	
+
 	int point_pos = strlen(first_after_point) + strlen(second_after_point);
 	idx = 0;
 	if (ddaihao_first != ddaihao_second)
@@ -476,13 +476,13 @@ inline void multiple(char first[], char second[], char r[]) {
 		if (i == point_pos)
 			r[idx++] = '.';
 		r[idx++] = r_rev[i] + '0';
-		
+
 	}
 }
 inline bool divide(char left[], char right[], char result[]) {
-	
+
 	if (!strcmp(right, "0"))
-		return;
+		return false;
 	char div[100];
 	div[0] = '0';
 	char right_origin[100];
@@ -517,7 +517,7 @@ inline bool divide(char left[], char right[], char result[]) {
 
 	//strcpy(result, left);
 
-	return;
+	return true;
 
 }
 inline bool modular(char left[], char right[], char r[]) {
@@ -640,49 +640,49 @@ bool next_op(char input[], int p) {
 }
 
 void print_result(char result[]) {
-   bool is_r_minus_num = false;
-   bool does_r_have_point = false;
-   int pos_point;
-   if(result[0] == '-')
-      is_r_minus_num = true;
-   for(int i = 0; i < strlen(result); i++)
-      if(result[i]=='.')
-         does_r_have_point = true;
+	bool is_r_minus_num = false;
+	bool does_r_have_point = false;
+	int pos_point;
+	if (result[0] == '-')
+		is_r_minus_num = true;
+	for (int i = 0; i < strlen(result); i++)
+		if (result[i] == '.')
+			does_r_have_point = true;
 
-   char to_print_thingsi_rev[100];
-   int idx = 0,n=0,pass_point=0,pass_point_yes=0,k=0; 
-   for(int i = strlen(result)-1 ; i>= is_r_minus_num;i--){
-      to_print_thingsi_rev[idx++] = result[i];
-      if(pass_point_yes==1)
-         k++;
-      if(i==is_r_minus_num){
-         to_print_thingsi_rev[idx]='\0';
-         continue;
-      }
-      if(result[i-1]=='.'){
-         to_print_thingsi_rev[idx++]='.';
-         i--;
-         pass_point_yes=1;
-         n=0;
-      }
+	char to_print_thingsi_rev[100];
+	int idx = 0, n = 0, pass_point = 0, pass_point_yes = 0, k = 0;
+	for (int i = strlen(result) - 1; i >= is_r_minus_num; i--) {
+		to_print_thingsi_rev[idx++] = result[i];
+		if (pass_point_yes == 1)
+			k++;
+		if (i == is_r_minus_num) {
+			to_print_thingsi_rev[idx] = '\0';
+			continue;
+		}
+		if (result[i - 1] == '.') {
+			to_print_thingsi_rev[idx++] = '.';
+			i--;
+			pass_point_yes = 1;
+			n = 0;
+		}
 
 
-      else if(idx==4*n+3&&pass_point_yes==0){
-         to_print_thingsi_rev[idx++]=',';
-         n++;
-      }
+		else if (idx == 4 * n + 3 && pass_point_yes == 0) {
+			to_print_thingsi_rev[idx++] = ',';
+			n++;
+		}
 
-      else if(k==3*n+3&&pass_point_yes==1){
-         to_print_thingsi_rev[idx++]=',';
-         n++;
-      }
+		else if (k == 3 * n + 3 && pass_point_yes == 1) {
+			to_print_thingsi_rev[idx++] = ',';
+			n++;
+		}
 
-   }
-   if(is_r_minus_num)
-      printf("-");   
+	}
+	if (is_r_minus_num)
+		printf("-");
 
-   for(int i = strlen(to_print_thingsi_rev)-1; i>=0 ;i--)
-      printf("%c", to_print_thingsi_rev[i]);
+	for (int i = strlen(to_print_thingsi_rev) - 1; i >= 0; i--)
+		printf("%c", to_print_thingsi_rev[i]);
 	printf("\n");
 
 }
