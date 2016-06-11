@@ -80,7 +80,7 @@ int main()
 				clear_all(result, '\0', strlen(result));
 				get_ans(tmp, result);
 			}
-			puts(result);
+			print_result(result);
 		}
 	}
 }
@@ -175,7 +175,7 @@ void show_var() {
 	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
 		//my_print(var_value[i]);
-		puts(var_value[i]);
+		print_result(var_value[i]);
 	}
 }
 void load_var() {
@@ -618,10 +618,31 @@ void get_ans(char input[], char result[]) {
 			data[strlen(data) - 1] = '\0';
 		}
 	}
-	if (data[strlen(data) - 1] == 32)
+	if (data[strlen(data) - 1] == 32) //알수없는 공백 제거
 		data[strlen(data) - 1] = 0;
 	data[strlen(data) - 1] = '\0';
+	
+	for(int i=strlen(data)-1;i>=0;i--){//1000002 * 2.0 = 2000004.0경우 제외하고 소수점 뒤 0 제거
+		if(data[i]!='0')
+			break;
+		else if(data[i]=='0'&&data[i-1]!='.')
+			data[i]=0;
+	}
 	strcpy(result, data);
+	bool have_point = false;
+	int pos_point=0;
+	for(int i=strlen(result)-1,j=0;i>=0;i--,j++){
+		if(result[i]=='.'){
+			have_point=true;
+			pos_point=j;
+		}
+	}
+	if(have_point==true){     //소수점 뒤 9자리까지만 출력 (반올림x)
+		if(pos_point>=10){
+			for(int i=strlen(result)-1,j=0;j<pos_point-9;j++,i--)
+				result[i]=0;
+		}
+	}
 }
 int get_num(char from[], char target[], int p) {
 	char tmp[100] = { 0 };
