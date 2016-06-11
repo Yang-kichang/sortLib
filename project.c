@@ -233,7 +233,7 @@ int check_error(char input[]) {
 	}
 	if (number_of_equal == 1) {
 		set_var(input);
-		return 1; //변수선언
+		return 0; //변수선언
 	}
 	else if (strcmp(input, "clear") == 0) {
 		system("clear");
