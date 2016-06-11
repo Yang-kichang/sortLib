@@ -74,10 +74,12 @@ int main()
 			char result[100] = { 0 };
 			printf("= ");
 			get_ans(input, result);
-			char tmp[100];
-			strcpy(tmp, result);
-			clear_all(result, '\0', strlen(result));
-			get_ans(tmp, result);
+			if (number_of_op(result)) {
+				char tmp[100];
+				strcpy(tmp, result);
+				clear_all(result, '\0', strlen(result));
+				get_ans(tmp, result);
+			}
 			puts(result);
 		}
 	}
@@ -216,8 +218,9 @@ void input_string(char input[]) {
 	}
 }
 int check_error(char input[]) {
-	if (input[0] >= 'a' && input[0] <= 'z' && strlen(input) == 1)
-		input[0] -= ('a' - 'A');
+	for (int i = 0; i < strlen(input); i++)
+		if (input[i] >= 'a' && input[i] <= 'z')
+			input[i] -= ('a' - 'A');
 	int i, j;
 	int number_of_equal = 0;
 	bool error = false;
@@ -236,18 +239,18 @@ int check_error(char input[]) {
 		set_var(input);
 		return 0; //변수선언
 	}
-	else if (strcmp(input, "end") == 0) {
+	else if (strcmp(input, "END") == 0) {
 		return -1; //종료
 	}
-	else if (strcmp(input, "clear") == 0) {
+	else if (strcmp(input, "CLEAR") == 0) {
 		system("clear");
 		return 0;
 	}
-	else if (strcmp(input, "load") == 0) {
+	else if (strcmp(input, "LOAD") == 0) {
 		load_var();
 		return 0;
 	}
-	else if (strcmp(input, "save") == 0) {
+	else if (strcmp(input, "SAVE") == 0) {
 		save_var();
 		return 0;
 	}
