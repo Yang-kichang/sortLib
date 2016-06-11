@@ -614,6 +614,8 @@ void get_ans(char input[], char result[]) {
 			is_left_Ready = true;
 		}
 	}
+	if(data[strlen(data)-1]==32)
+		data[strlen(data)-1]=0;
 	strcpy(result, data);
 	print_result(result);
 }
