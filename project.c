@@ -630,7 +630,6 @@ void get_ans(char input[], char result[]) {
 	}
 	if (data[strlen(data) - 1] == 32) //알수없는 공백 제거
 		data[strlen(data) - 1] = 0;
-	data[strlen(data) - 1] = '\0';
 	
 	for(int i=strlen(data)-1;i>=0;i--){//1000002 * 2.0 = 2000004.0경우 제외하고 소수점 뒤 0 제거
 		if(data[i]!='0')
