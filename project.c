@@ -40,7 +40,7 @@ bool divide(char left[], char right[], char result[]);
 bool modular(char left[], char right[], char result[]);
 bool dose_it_have_point(char target[], char after_point[]);
 /*연산과 상관없는 부분*/
-void my_print(char[]);
+void print_result(char []);
 
 
 /*초기화와 관련된 부분*/
@@ -74,7 +74,6 @@ int main()
 			char result[100] = { 0 };
 			printf("= ");
 			get_ans(input, result);
-			puts(result);
 		}
 	}
 }
@@ -558,7 +557,7 @@ bool dose_it_have_point(char target[], char after_point[]) {
 		after_point[idx++] = target[i];
 	return flag;
 }
-void my_print(char target[]) { return; }
+
 void clear_all(char target[], int value, int target_size) {
 	for (int i = 0; i < target_size; i++)
 		target[i] = value;
@@ -616,6 +615,7 @@ void get_ans(char input[], char result[]) {
 		}
 	}
 	strcpy(result, data);
+	print_result(result);
 }
 int get_num(char from[], char target[], int p) {
 	char tmp[100] = { 0 };
@@ -637,4 +637,52 @@ bool next_op(char input[], int p) {
 	if (input[p] == '*' || input[p] == '/' || input[p] == '%')
 		return false;
 	return true;
+}
+
+void print_result(char result[]) {
+   bool is_r_minus_num = false;
+   bool does_r_have_point = false;
+   int pos_point;
+   if(result[0] == '-')
+      is_r_minus_num = true;
+   for(int i = 0; i < strlen(result); i++)
+      if(result[i]=='.')
+         does_r_have_point = true;
+
+   char to_print_thingsi_rev[100];
+   int idx = 0,n=0,pass_point=0,pass_point_yes=0,k=0; 
+   for(int i = strlen(result)-1 ; i>= is_r_minus_num;i--){
+      to_print_thingsi_rev[idx++] = result[i];
+      if(pass_point_yes==1)
+         k++;
+      if(i==is_r_minus_num){
+         to_print_thingsi_rev[idx]='\0';
+         continue;
+      }
+      if(result[i-1]=='.'){
+         to_print_thingsi_rev[idx++]='.';
+         i--;
+         pass_point_yes=1;
+         n=0;
+      }
+
+
+      else if(idx==4*n+3&&pass_point_yes==0){
+         to_print_thingsi_rev[idx++]=',';
+         n++;
+      }
+
+      else if(k==3*n+3&&pass_point_yes==1){
+         to_print_thingsi_rev[idx++]=',';
+         n++;
+      }
+
+   }
+   if(is_r_minus_num)
+      printf("-");   
+
+   for(int i = strlen(to_print_thingsi_rev)-1; i>=0 ;i--)
+      printf("%c", to_print_thingsi_rev[i]);
+	printf("\n");
+
 }
