@@ -373,6 +373,7 @@ inline void plus(char left[], char right[], char result[]) {
 inline void minus(char left[], char right[], char result[]) {
 	char left_after_point[11] = { 0 };
 	char right_after_point[11] = { 0 };
+	bool yes_minus = false;
 	dose_it_have_point(left, left_after_point);
 	dose_it_have_point(right, right_after_point);
 	if (strlen(left_after_point) > strlen(right_after_point)) {
@@ -387,6 +388,17 @@ inline void minus(char left[], char right[], char result[]) {
 	}
 	strcat(left, left_after_point);
 	strcat(right, right_after_point);
+	if(compare_func(right,left)==1){
+		char change[100];
+		stpcpy(change,right);
+		for(int i=0;i<strlen(right);i++)
+			right[i]=0;
+		strcpy(right,left);
+		for(int i=0; i<strlen(left);i++)
+			left[i]=0;
+		strcpy(left,change);
+		yes_minus = true;
+	}
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1, len = strlen(left) + strlen(right);
 	if (strlen(left) > strlen(right))
@@ -409,6 +421,10 @@ inline void minus(char left[], char right[], char result[]) {
 	int point_pos = strlen(left_after_point);
 	idx = 0;
 	for (int i = len; i > 0; i--) {
+		if(yes_minus==true){
+			result[idx++]='-';
+			yes_minus=false;
+		}
 		if ((idx == 0 || (idx == 1 && result[0] == '-')) && result_rev[i] == 0 && i != 1)
 			continue;
 		if (i == point_pos)
