@@ -157,6 +157,16 @@ void set_var(char input[]) {
 	int idx = 0;
 	for (; i < strlen(input); i++)
 		var_value[idx_var][idx++] = input[i];
+	if (number_of_op(var_value[idx_var])) {
+		char tmp[100] = { 0 };
+		get_ans(var_value[idx_var], tmp);
+		if (number_of_op(tmp)) {
+			char tmp2[100] = { 0 };
+			get_ans(tmp, tmp2);
+			strcpy(tmp, tmp2);
+		}
+		strcpy(var_value[idx_var], tmp);
+	}
 }
 void read_var(char data[], int p) {
 	int i, idx;
