@@ -74,11 +74,15 @@ int main()
 			char result[100] = { 0 };
 			printf("= ");
 			get_ans(input, result);
+			char tmp[100];
+			strcpy(tmp, result);
+			clear_all(result, '\0', strlen(result));
+			get_ans(tmp, result);
+			puts(result);
 		}
 	}
 }
 bool compare_func(char first[], char second[]) {
-	//puts("dmdkdkdk");
 	bool r = true;
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
 	bool ddaihao_first = true;
@@ -87,14 +91,12 @@ bool compare_func(char first[], char second[]) {
 	int idx = 0;
 	for (int i = !ddaihao_first; i < strlen(first); i++)
 		tmp1[idx++] = first[i];
-	//puts(tmp1);
 	bool ddaihao_second = true;
 	if (second[0] == '-')
 		ddaihao_second = false;
 	idx = 0;
 	for (int i = !ddaihao_second; i < strlen(second); i++)
 		tmp2[idx++] = second[i];
-	//puts(tmp2);
 	if (!ddaihao_first && !ddaihao_second)
 		r = !r;
 	else if (ddaihao_first != ddaihao_second) {
@@ -609,15 +611,14 @@ void get_ans(char input[], char result[]) {
 			clear_all(left, 0, sizeof(left));
 			clear_all(right, 0, sizeof(right));
 			clear_all(result, 0, strlen(result));
-			strcpy(left, data);
-			left[strlen(left) - 1] = '\0';
-			is_left_Ready = true;
+			i -= 1;
+			data[strlen(data) - 1] = '\0';
 		}
 	}
-	if(data[strlen(data)-1]==32)
-		data[strlen(data)-1]=0;
+	if (data[strlen(data) - 1] == 32)
+		data[strlen(data) - 1] = 0;
+	data[strlen(data) - 1] = '\0';
 	strcpy(result, data);
-	print_result(result);
 }
 int get_num(char from[], char target[], int p) {
 	char tmp[100] = { 0 };
@@ -634,7 +635,7 @@ int get_num(char from[], char target[], int p) {
 	return r;
 }
 bool next_op(char input[], int p) {
-	while ((input[p] != '+' || input[p] == '-' || input[p] == '*' || input[p] == '/' || input[p] == '%') && p < strlen(input))
+	while ((input[p] != '+' && input[p] == '-' &&  input[p] == '*' && input[p] == '/' && input[p] == '%') && p < strlen(input))
 		p++;
 	if (input[p] == '*' || input[p] == '/' || input[p] == '%')
 		return false;
