@@ -155,7 +155,7 @@ void set_var(char input[]) {
 	int idx = 0;
 	char show_value[100]={0};
 	for(int i=0;i<strlen(input);i++){
-		if((input[i]>='0'&&input[i]<='9')||input[i]=='-'){
+		if((input[i]>='0'&&input[i]<='9')||input[i]=='-'||input[i]=='.'){
 			show_value[idx++] = input[i];
 		}
 	}
