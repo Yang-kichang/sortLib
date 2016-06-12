@@ -653,7 +653,7 @@ void get_ans(char input[], char result[]) {
 	char data[100] = { 0 };
 	int idx_data = 0;
 	bool is_left_Ready = false, is_right_Ready = false, is_op_Ready = false;
-	bool not_now = true;
+	bool not_now = true, always_do = false;
 	char left[100] = { 0 }, right[100] = { 0 }, op;
 	int first, finish = false;
 	for (int i = 0; i < strlen(input); i++) {
@@ -661,6 +661,8 @@ void get_ans(char input[], char result[]) {
 			finish = true;
 		idx_data = strlen(data);
 		data[idx_data] = input[i];
+		if (data[idx_data] == '*' || data[idx_data] == '/' || data[idx_data] == '%')
+			always_do = true;
 		if ((data[idx_data] >= 'A' && data[idx_data] <= 'Z') || (data[idx_data] >= 'a' && data[idx_data] <= 'z')) {
 			read_var(data, idx_data);
 			idx_data = strlen(data);
@@ -684,13 +686,13 @@ void get_ans(char input[], char result[]) {
 			}
 		}
 		if (is_right_Ready && is_left_Ready && is_op_Ready) {
-			if (next_op(input, idx_data + 1)) {
+			if (next_op(input, idx_data + 1) || always_do) {
 				ps_cal(left, right, op, result);
 				clear_after_n(data, 0, first, sizeof(data));
 				strcat(data, result);
 				strcat(data, " ");
 			}
-			is_left_Ready = false; is_right_Ready = false; is_op_Ready = false; not_now = true;
+			is_left_Ready = false; is_right_Ready = false; is_op_Ready = false; not_now = true; always_do = false;
 			clear_all(left, 0, sizeof(left));
 			clear_all(right, 0, sizeof(right));
 			clear_all(result, 0, strlen(result));
