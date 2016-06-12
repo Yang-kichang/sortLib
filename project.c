@@ -384,7 +384,7 @@ bool ps_cal(char left[], char right[], char op, char result[]) {
 				tmp1[i - 1] = left[i];
 			for (int i = 1; i < strlen(right); i++)
 				tmp2[i - 1] = right[i];
-			if (compare_func(tmp1, tmp2)) {
+			if (compare_func(tmp1, tmp2) && strcmp(tmp1, tmp2)) {
 				result[0] = '-';
 				minus(tmp1, tmp2, result);
 			}
@@ -810,6 +810,8 @@ void remove_zero(char target[]) {
 	}
 	for (int i = flag; i < strlen(target); i++) {
 		if (target[i] == '0' && is_there_point_after_me(target, i) && !is_there_any_num_before_me(target, i) && target[i + 1] != '.')
+			continue;
+		if (!is_there_point_after_me(target, i) && i != strlen(target) - 1 && target[i] == '0' && (idx == 0 || (idx == 1 && tmp[0] == '-')))
 			continue;
 		tmp[idx++] = target[i];
 	}
