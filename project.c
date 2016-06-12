@@ -7,6 +7,7 @@
 char var_value[11][100];
 char var_name[11];
 int number_of_var = 0;
+bool flag1 = false;
 
 
 /*두 수의 대소를 비교하는 함수*/
@@ -159,8 +160,10 @@ void set_var(char input[]) {
 			show_value[idx++] = input[i];
 		}
 	}
-	printf("= ");
-	print_result(show_value);
+	if(flag1==false){
+		printf("= ");
+		print_result(show_value);
+	}
 	idx = 0;
 	for (; i < strlen(input); i++)
 		var_value[idx_var][idx++] = input[i];
@@ -174,6 +177,7 @@ void set_var(char input[]) {
 		}
 		strcpy(var_value[idx_var], tmp);
 	}
+	flag1 = false;
 }
 void read_var(char data[], int p) {
 	int i, idx;
@@ -211,6 +215,7 @@ void load_var() {
 		input[2] = '=';
 		input[3] = ' ';
 		strcat(input, value);
+		flag1 = true;
 		check_error(input);
 	}
 	fclose(save);
