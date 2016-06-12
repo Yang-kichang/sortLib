@@ -153,6 +153,15 @@ void set_var(char input[]) {
 			break;
 	i = 4;
 	int idx = 0;
+	char show_value[100]={0};
+	for(int i=0;i<strlen(input);i++){
+		if((input[i]>='0'&&input[i]<='9')||input[i]=='-'){
+			show_value[idx++] = input[i];
+		}
+	}
+	printf("= ");
+	print_result(show_value);
+	idx = 0;
 	for (; i < strlen(input); i++)
 		var_value[idx_var][idx++] = input[i];
 	if (number_of_op(var_value[idx_var])) {
