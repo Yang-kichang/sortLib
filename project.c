@@ -730,18 +730,6 @@ void get_ans(char input[], char result[]) {
 	strcpy(result, data);
 	bool have_point = false;
 	int pos_point = 0;
-	for (int i = strlen(result) - 1, j = 0; i >= 0; i--, j++) {
-		if (result[i] == '.') {
-			have_point = true;
-			pos_point = j;
-		}
-	}
-	if (have_point == true) {     //소수점 뒤 9자리까지만 출력 (반올림x)
-		if (pos_point >= 10) {
-			for (int i = strlen(result) - 1, j = 0; j<pos_point - 9; j++, i--)
-				result[i] = 0;
-		}
-	}
 }
 int get_num(char from[], char target[], int p) {
 	char tmp[100] = { 0 };
@@ -808,6 +796,20 @@ void print_result(char result[]) {
 
 }
 void remove_zero(char target[]) {
+	bool have_point = false;
+	int pos_point;
+	for (int i = strlen(target) - 1, j = 0; i >= 0; i--, j++) {
+		if (target[i] == '.') {
+			have_point = true;
+			pos_point = j;
+		}
+	}
+	if (have_point) {     //소수점 뒤 9자리까지만 출력 (반올림x)
+		if (pos_point >= 10) {
+			for (int i = strlen(target) - 1, j = 0; j<pos_point - 9; j++, i--)
+				target[i] = 0;
+		}
+	}
 	char tmp[100] = { 0 };
 	int idx = 0;
 	bool flag = false;
