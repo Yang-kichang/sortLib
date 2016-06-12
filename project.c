@@ -153,9 +153,9 @@ void set_var(char input[]) {
 			break;
 	i = 4;
 	int idx = 0;
-	char show_value[100]={0};
-	for(int i=0;i<strlen(input);i++){
-		if((input[i]>='0'&&input[i]<='9')||input[i]=='-'||input[i]=='.'){
+	char show_value[100] = { 0 };
+	for (int i = 0; i<strlen(input); i++) {
+		if ((input[i] >= '0'&&input[i] <= '9') || input[i] == '-' || input[i] == '.') {
 			show_value[idx++] = input[i];
 		}
 	}
@@ -317,10 +317,77 @@ int number_of_num(char target[]) {
 }
 bool ps_cal(char left[], char right[], char op, char result[]) {
 	bool is_error = false;
-	if (op == '+')
-		plus(left, right, result);
-	else if (op == '-')
-		minus(left, right, result);
+	if (op == '+') {
+		if (left[0] != '-' && right[0] != '-')
+			plus(left, right, result);
+		else if (left[0] == '-' && right[0] == '-') {
+			result[0] = '-';
+			char tmp1[70] = { 0 }, tmp2[70] = { 0 };
+			for (int i = 1; i < strlen(left); i++)
+				tmp1[i - 1] = left[i];
+			for (int i = 1; i < strlen(right); i++)
+				tmp2[i - 1] = right[i];
+			plus(tmp1, tmp2, result);
+		}
+		else if (left[0] != '-' && right[0] == '-') {
+			char tmp[70] = { 0 };
+			for (int i = 1; i < strlen(right); i++)
+				tmp[i - 1] = right[i];
+			if (compare_func(left, tmp))
+				minus(left, tmp, result);
+			else {
+				result[0] = '-';
+				minus(tmp, left, result);
+			}
+		}
+		else if (left[0] == '-' && right[0] != '-') {
+			char tmp[70] = { 0 };
+			for (int i = 1; i < strlen(left); i++)
+				tmp[i - 1] = left[i];
+			if (compare_func(tmp, right) && strcmp(tmp, right)) {
+				result[0] = '-';
+				minus(right, tmp, result);
+			}
+			else
+				minus(right, tmp, result);
+		}
+	}
+	else if (op == '-') {
+		if (left[0] != '-' && right[0] != '-') {
+			if (compare_func(left, right))
+				minus(left, right, result);
+			else {
+				result[0] = '-';
+				minus(right, left, result);
+			}
+		}
+		else if (left[0] == '-' && right[0] == '-') {
+			char tmp1[70] = { 0 }, tmp2[70] = { 0 };
+			for (int i = 1; i < strlen(left); i++)
+				tmp1[i - 1] = left[i];
+			for (int i = 1; i < strlen(right); i++)
+				tmp2[i - 1] = right[i];
+			if (compare_func(tmp1, tmp2)) {
+				result[0] = '-';
+				minus(tmp1, tmp2, result);
+			}
+			else
+				minus(tmp2, tmp1, result);
+		}
+		else if (left[0] != '0' && right[0] == '-') {
+			char tmp[70] = { 0 };
+			for (int i = 1; i < strlen(right); i++)
+				tmp[i - 1] = right[i];
+			plus(left, tmp, result);
+		}
+		else if (left[0] == '-' && right[0] != '-') {
+			result[0] = '-';
+			char tmp[70] = { 0 };
+			for (int i = 1; i < strlen(left); i++)
+				tmp[i - 1] = left[i];
+			plus(tmp, right, result);
+		}
+	}
 	else if (op == '*')
 		multiple(left, right, result);
 	else if (op == '/')
@@ -368,7 +435,7 @@ inline void plus(char left[], char right[], char result[]) {
 		}
 	}
 	int point_pos = strlen(left_after_point);
-	idx = 0;
+	idx = strlen(result);
 	for (int i = len; i > 0; i--) {
 		if ((idx == 0 || (idx == 1 && result[0] == '-')) && result_rev[i] == 0 && i != 1)
 			continue;
@@ -380,8 +447,6 @@ inline void plus(char left[], char right[], char result[]) {
 inline void minus(char left[], char right[], char result[]) {
 	char left_after_point[11] = { 0 };
 	char right_after_point[11] = { 0 };
-	bool yes_minus = false;
-	bool put_zero = false;
 	dose_it_have_point(left, left_after_point);
 	dose_it_have_point(right, right_after_point);
 	if (strlen(left_after_point) > strlen(right_after_point)) {
@@ -394,20 +459,8 @@ inline void minus(char left[], char right[], char result[]) {
 		for (int i = 0; i < diff; i++)
 			strcat(left_after_point, "0");
 	}
-	if(strcmp(right,left)==0) put_zero=true;
 	strcat(left, left_after_point);
 	strcat(right, right_after_point);
-	if(compare_func(right,left)==1&&strcmp(right,left)!=0){
-		char change[100];
-		stpcpy(change,right);
-		for(int i=0;i<strlen(right);i++)
-			right[i]=0;
-		strcpy(right,left);
-		for(int i=0; i<strlen(left);i++)
-			left[i]=0;
-		strcpy(left,change);
-		yes_minus = true;
-	}
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1, len = strlen(left) + strlen(right);
 	if (strlen(left) > strlen(right))
@@ -428,16 +481,8 @@ inline void minus(char left[], char right[], char result[]) {
 		}
 	}
 	int point_pos = strlen(left_after_point);
-	idx = 0;
+	idx = strlen(result);
 	for (int i = len; i > 0; i--) {
-		if(yes_minus==true){
-			result[idx++]='-';
-			yes_minus=false;
-		}
-		if(put_zero==true){
-			result[idx++]='0';//10.2-10=00.2  .....?
-			put_zero=false;
-		}
 		if ((idx == 0 || (idx == 1 && result[0] == '-')) && result_rev[i] == 0 && i != 1)
 			continue;
 		if (i == point_pos)
