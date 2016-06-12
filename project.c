@@ -623,14 +623,17 @@ inline bool modular(char left[], char right[], char r[]) {
 		return false;
 	char right_origin[100];
 	strcpy(right_origin, right);
+	bool flag = false;
 	while (compare_func(left, right)) {
-		int idx = strlen(right);
-		right[idx] = '0';
+		right[strlen(right)] = '0';
+		flag = true;
 	}
-	right[strlen(right) - 1] = '\0';
+	if(flag)
+		right[strlen(right) - 1] = '\0';
 	while (compare_func(left, right) || !strcmp(left, right))
 	{
 		minus(left, right, r);
+		remove_zero(r);
 		strcpy(left, r);
 		clear_all(r, '\0', strlen(r));
 		while (!compare_func(left, right) && strcmp(right, right_origin))
