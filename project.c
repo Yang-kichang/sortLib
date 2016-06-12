@@ -9,7 +9,6 @@ char var_name[11];
 int number_of_var = 0;
 bool flag1 = false;
 
-
 /*두 수의 대소를 비교하는 함수*/
 bool compare_func(char first[], char second[]);
 
@@ -179,7 +178,7 @@ void set_var(char input[]) {
 			show_value[idx++] = input[i];
 		}
 	}
-	if(flag1==false){
+	if (flag1 == false) {		 
 		printf("= ");
 		print_result(show_value);
 	}
@@ -196,7 +195,6 @@ void set_var(char input[]) {
 		}
 		strcpy(var_value[idx_var], tmp);
 	}
-	flag1 = false;
 }
 void read_var(char data[], int p) {
 	int i, idx;
@@ -214,7 +212,6 @@ void show_var() {
 		puts("정의된 변수 없음");
 	for (i = 0; i < number_of_var; i++) {
 		printf("%c = ", var_name[i]);
-		//my_print(var_value[i]);
 		print_result(var_value[i]);
 	}
 }
@@ -236,6 +233,7 @@ void load_var() {
 		strcat(input, value);
 		flag1 = true;
 		check_error(input);
+		flag1 = false;
 	}
 	fclose(save);
 }
@@ -686,13 +684,13 @@ void get_ans(char input[], char result[]) {
 			finish = true;
 		idx_data = strlen(data);
 		data[idx_data] = input[i];
-		if (data[idx_data] == '*' || data[idx_data] == '/' || data[idx_data] == '%')
-			always_do = true;
 		if ((data[idx_data] >= 'A' && data[idx_data] <= 'Z') || (data[idx_data] >= 'a' && data[idx_data] <= 'z')) {
 			read_var(data, idx_data);
 			idx_data = strlen(data);
 			continue;
 		}
+		if (data[idx_data] == '*' || data[idx_data] == '/' || data[idx_data] == '%')
+			always_do = true;
 		if (data[idx_data] == ' ' || input[i + 1] == '\0') {
 			if (is_op_Ready) {
 				if (input[i + 1] == '\0')
@@ -711,7 +709,7 @@ void get_ans(char input[], char result[]) {
 			}
 		}
 		if (is_right_Ready && is_left_Ready && is_op_Ready) {
-			if (next_op(input, idx_data + 1) || always_do) {
+			if (next_op(input, i + 1) || always_do) {
 				ps_cal(left, right, op, result);
 				clear_after_n(data, 0, first, sizeof(data));
 				strcat(data, result);
