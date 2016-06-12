@@ -7,7 +7,6 @@
 char var_value[11][100];
 char var_name[11];
 int number_of_var = 0;
-bool flag1 = false;
 
 
 /*두 수의 대소를 비교하는 함수*/
@@ -32,8 +31,6 @@ int number_of_num(char target[]);
 
 /*사칙연산을 위한 부분*/
 bool ps_cal(char left[], char right[], char op, char result[]);
-
-
 void plus(char left[], char right[], char result[]);
 void minus(char left[], char right[], char result[]);
 void multiple(char left[], char right[], char result[]);
@@ -42,7 +39,7 @@ bool modular(char left[], char right[], char result[]);
 bool dose_it_have_point(char target[], char after_point[]);
 /*연산과 상관없는 부분*/
 void print_result(char[]);
-bool check_remove_zero(char data[]);
+void remove_zero(char[]);
 
 /*초기화와 관련된 부분*/
 void clear_all(char[], int value, int target_size);
@@ -54,6 +51,9 @@ void get_ans(char input[], char result[]);
 int get_num(char from[], char target[], int p);
 bool next_op(char input[], int p);
 
+/*for remove_zero()*/
+bool is_there_point_after_me(char[], int);
+bool is_there_any_num_before_me(char[], int);
 
 int main()
 {
@@ -98,6 +98,22 @@ bool compare_func(char first[], char second[]) {
 	idx = 0;
 	for (int i = !ddaihao_second; i < strlen(second); i++)
 		tmp2[idx++] = second[i];
+	char first_after_point[11] = { 0 };
+	char second_after_point[11] = { 0 };
+	dose_it_have_point(tmp1, first_after_point);
+	dose_it_have_point(tmp2, second_after_point);
+	if (strlen(first_after_point) > strlen(second_after_point)) {
+		int diff = strlen(first_after_point) - strlen(second_after_point);
+		for (int i = 0; i < diff; i++)
+			strcat(second_after_point, "0");
+	}
+	else {
+		int diff = strlen(second_after_point) - strlen(first_after_point);
+		for (int i = 0; i < diff; i++)
+			strcat(first_after_point, "0");
+	}
+	strcat(tmp1, first_after_point);
+	strcat(tmp2, second_after_point);
 	if (!ddaihao_first && !ddaihao_second)
 		r = !r;
 	else if (ddaihao_first != ddaihao_second) {
@@ -160,10 +176,8 @@ void set_var(char input[]) {
 			show_value[idx++] = input[i];
 		}
 	}
-	if(flag1==false){
-		printf("= ");
-		print_result(show_value);
-	}
+	printf("= ");
+	print_result(show_value);
 	idx = 0;
 	for (; i < strlen(input); i++)
 		var_value[idx_var][idx++] = input[i];
@@ -177,7 +191,6 @@ void set_var(char input[]) {
 		}
 		strcpy(var_value[idx_var], tmp);
 	}
-	flag1 = false;
 }
 void read_var(char data[], int p) {
 	int i, idx;
@@ -215,7 +228,6 @@ void load_var() {
 		input[2] = '=';
 		input[3] = ' ';
 		strcat(input, value);
-		flag1 = true;
 		check_error(input);
 	}
 	fclose(save);
@@ -351,7 +363,7 @@ bool ps_cal(char left[], char right[], char op, char result[]) {
 				tmp[i - 1] = left[i];
 			if (compare_func(tmp, right) && strcmp(tmp, right)) {
 				result[0] = '-';
-				minus(right, tmp, result);
+				minus(tmp, right, result);
 			}
 			else
 				minus(right, tmp, result);
@@ -488,8 +500,6 @@ inline void minus(char left[], char right[], char result[]) {
 	int point_pos = strlen(left_after_point);
 	idx = strlen(result);
 	for (int i = len; i > 0; i--) {
-		if ((idx == 0 || (idx == 1 && result[0] == '-')) && result_rev[i] == 0 && i != 1)
-			continue;
 		if (i == point_pos)
 			result[idx++] = '.';
 		result[idx++] = result_rev[i] + '0';
@@ -709,13 +719,6 @@ void get_ans(char input[], char result[]) {
 	}
 	if (data[strlen(data) - 1] == 32) //알수없는 공백 제거
 		data[strlen(data) - 1] = 0;
-
-	for (int i = strlen(data) - 1; i >= 0; i--) {//1000002 * 2.0 = 2000004.0경우 제외하고 소수점 뒤 0 제거
-		if (data[i] != '0')
-			break;
-		else if (data[i - 1] != '.' && data[i] == '0' && check_remove_zero(data))
-			data[i] = 0;
-	}
 	strcpy(result, data);
 	bool have_point = false;
 	int pos_point = 0;
@@ -754,6 +757,7 @@ bool next_op(char input[], int p) {
 	return true;
 }
 void print_result(char result[]) {
+	remove_zero(result);
 	bool is_r_minus_num = false;
 	bool does_r_have_point = false;
 	int pos_point;
@@ -795,10 +799,38 @@ void print_result(char result[]) {
 	printf("\n");
 
 }
+void remove_zero(char target[]) {
+	char tmp[100] = { 0 };
+	int idx = 0;
+	bool flag = false;
+	if (target[0] == '-') {
+		flag = true;
+		tmp[0] = '-';
+		idx++;
+	}
+	for (int i = flag; i < strlen(target); i++) {
+		if (target[i] == '0' && is_there_point_after_me(target, i) && !is_there_any_num_before_me(target, i) && target[i + 1] != '.')
+			continue;
+		tmp[idx++] = target[i];
+	}
+	strcpy(target, tmp);
+}
 bool check_remove_zero(char target[]) {
 	bool flag = false;
 	for (int i = 0; i < strlen(target); i++)
 		if (target[i] == '.')
 			flag = true;
 	return flag;
+}
+bool is_there_point_after_me(char target[], int idx) {
+	for (int i = idx + 1; i < strlen(target); i++)
+		if (target[i] == '.')
+			return true;
+	return false;
+}
+bool is_there_any_num_before_me(char target[], int idx) {
+	for(int i = idx -1; i >= 0; i--)
+		if (target[i] != '0' && target[i] != '-')
+			return true;
+	return false;
 }
