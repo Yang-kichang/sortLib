@@ -275,6 +275,10 @@ int check_error(char input[]) {
 		}
 	}
 	if (number_of_equal == 1) {
+		if(number_of_var > 9){
+			puts("error: 변수의 개수를 초과하였습니다.");
+			return 0;
+		}
 		set_var(input);
 		return 0; //변수선언
 	}
