@@ -3,53 +3,49 @@
 #include <string.h>
 #include <stdbool.h>
 
-
 char var_value[11][100];
 char var_name[11];
 int number_of_var = 0;
 bool flag1 = false;
 
 /*두 수의 대소를 비교하는 함수*/
-bool compare_func(char first[], char second[]);
-
+bool compare_func(char first[], char second[]);// 입력받은 두 케이스의 크기를를 비교하는 함수.
 
 /*변수와 관련된 부분*/
-bool check_var(char name);
-void set_var(char input[]);
-void read_var(char data[], int p);
-void show_var();
-void load_var();
-void save_var();
+bool check_var(char name);//변수가 이미 존재하는지 검사
+void set_var(char input[]);//변수를 설정하는 함수
+void read_var(char data[], int p);//변수를 읽어주는 함수
+void show_var();//저장된  변수를 보여주는 함수
+void load_var();//변수를 불러오는 함수
+void save_var();//변수를 설정한 수 저장하는 함수
 
 
 /*입력된 데이터 체크하는 부분*/
-void input_string(char input[]);
-int check_error(char input[]);
-int number_of_op(char target[]);
-int number_of_num(char target[]);
-
+void input_string(char input[]);//데이터를 입력받는 함수
+int check_error(char input[]);//입력에 에러를 체크해주는 함수
+int number_of_op(char target[]);//연산자를 저장하는 함수
+int number_of_num(char target[]);//수치를 저장하는 함수
 
 /*사칙연산을 위한 부분*/
-bool ps_cal(char left[], char right[], char op, char result[]);
-void plus(char left[], char right[], char result[]);
-void minus(char left[], char right[], char result[]);
-void multiple(char left[], char right[], char result[]);
-bool divide(char left[], char right[], char result[]);
-bool modular(char left[], char right[], char result[]);
-bool dose_it_have_point(char target[], char after_point[]);
+bool ps_cal(char left[], char right[], char op, char result[]);//연산처리를 하는 함수
+void plus(char left[], char right[], char result[]);//덧셈처리함수
+void minus(char left[], char right[], char result[]);//뺄셈처리함수
+void multiple(char left[], char right[], char result[]);//곱셈처리함수
+bool divide(char left[], char right[], char result[]);//나눗셈처리함수
+bool modular(char left[], char right[], char result[]);//나머지연산 처리함수
+bool dose_it_have_point(char target[], char after_point[]);//소수점 체크함수
 /*연산과 상관없는 부분*/
-void print_result(char[]);
-void remove_zero(char[]);
+void print_result(char[]);//결과를 화면에 출력해주는 함수
+void remove_zero(char[]);//배열에 값과 관계없는 '0'값을 제거해주는함수
 
 /*초기화와 관련된 부분*/
-void clear_all(char[], int value, int target_size);
-void clear_after_n(char[], int value, int from, int target_szie);
-
+void clear_all(char[], int value, int target_size);//memset과 동일한 기능을 하는 함수
+void clear_after_n(char[], int value, int from, int target_szie);//배열에서 arr[n] 이후에 있는 값들을 제거하는 함수
 
 /*연산 우선순위 & 연산을 처리하는 부분*/
-void get_ans(char input[], char result[]);
-int get_num(char from[], char target[], int p);
-bool next_op(char input[], int p);
+void get_ans(char input[], char result[]);//답을 구하는 함수
+int get_num(char from[], char target[], int p);//스트림에서 숫자를 끌어오는 함수.
+bool next_op(char input[], int p);//다음 연산자가 무엇인지 체크하는 함수
 
 /*for remove_zero()*/
 bool is_there_point_after_me(char[], int);
