@@ -372,6 +372,7 @@ inline void minus(char left[], char right[], char result[]) {
 	char left_after_point[11] = { 0 };
 	char right_after_point[11] = { 0 };
 	bool yes_minus = false;
+	bool put_zero = false;
 	dose_it_have_point(left, left_after_point);
 	dose_it_have_point(right, right_after_point);
 	if (strlen(left_after_point) > strlen(right_after_point)) {
@@ -384,9 +385,10 @@ inline void minus(char left[], char right[], char result[]) {
 		for (int i = 0; i < diff; i++)
 			strcat(left_after_point, "0");
 	}
+	if(strcmp(right,left)==0) put_zero=true;
 	strcat(left, left_after_point);
 	strcat(right, right_after_point);
-	if(compare_func(right,left)==1){
+	if(compare_func(right,left)==1&&strcmp(right,left)!=0){
 		char change[100];
 		stpcpy(change,right);
 		for(int i=0;i<strlen(right);i++)
@@ -422,6 +424,10 @@ inline void minus(char left[], char right[], char result[]) {
 		if(yes_minus==true){
 			result[idx++]='-';
 			yes_minus=false;
+		}
+		if(put_zero==true){
+			result[idx++]='0';//10.2-10=00.2  .....?
+			put_zero=false;
 		}
 		if ((idx == 0 || (idx == 1 && result[0] == '-')) && result_rev[i] == 0 && i != 1)
 			continue;
