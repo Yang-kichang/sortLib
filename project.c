@@ -178,7 +178,7 @@ void set_var(char input[]) {
 			show_value[idx++] = input[i];
 		}
 	}
-	if (flag1 == false) {		 
+	if (flag1 == false) {
 		printf("= ");
 		print_result(show_value);
 	}
@@ -275,7 +275,7 @@ int check_error(char input[]) {
 		}
 	}
 	if (number_of_equal == 1) {
-		if(number_of_var > 9){
+		if (number_of_var > 9) {
 			puts("error: 변수의 개수를 초과하였습니다.");
 			return 0;
 		}
@@ -591,24 +591,22 @@ inline void multiple(char first[], char second[], char r[]) {
 
 	}
 }
-inline void divide(char left[], char right[], char result[]) {
+inline bool divide(char left[], char right[], char result[]) {
+	char result_tmp[100] = { 0 };
 	if (!strcmp(right, "0"))
-		return ;
+		return false;
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
 	bool ddaihao_first = true;
 	if (left[0] == '-')
 		ddaihao_first = false;
 	int idx = 0;
-	for (int i = !ddaihao_first; i < strlen(left); i++)
-		tmp1[idx++] = left[i];
+	for (int i = !ddaihao_first; i < strlen(left); i++) tmp1[idx++] = left[i];
 	bool ddaihao_second = true;
 	if (right[0] == '-')
 		ddaihao_second = false;
 	idx = 0;
-	for (int i = !ddaihao_second; i < strlen(right); i++)
-		tmp2[idx++] = right[i];
+	for (int i = !ddaihao_second; i < strlen(right); i++) tmp2[idx++] = right[i];
 	//부호 정리해주기 완료
-	int tmp[100][100] = { 0 };
 	char first_after_point[11] = { 0 };
 	char second_after_point[11] = { 0 };
 	dose_it_have_point(tmp1, first_after_point);
@@ -625,42 +623,38 @@ inline void divide(char left[], char right[], char result[]) {
 	}
 	strcat(tmp1, first_after_point);
 	strcat(tmp2, second_after_point);
-	char counter[100] = { 0 },one[100]={0};
+	char counter[100] = { 0 }, one[100] = { 0 };
 	counter[0] = '0';
-	one[0]='1';
-
-
-	while (compare_func(tmp1, tmp2))
+	one[0] = '1';
+	while (compare_func(tmp1, tmp2) && strcmp(tmp2, "") && strlen(one))
 	{
-		minus(tmp1, tmp2, result);
-		remove_zero(result);
-		puts(result);
-		strcpy(tmp1, result);
-		clear_all(result, 0, strlen(result));
-		plus(counter,one,result);
-		strcpy(counter,result);
-		clear_all(result, 0, strlen(result));
-		/*	counter[0]++;
-			puts(counter);
-			int range=strlen(counter);
-			for (int i = 0; i <range; i++)
-			{
-			if (counter[i] > '9') {
-			if (counter[i + 1] == 0)
-			counter[i + 1] = '0';
-			counter[i + 1]++;
-			counter[i]='0';
-			}
-			}
-		 */		
+		clear_all(result_tmp, '\0', sizeof(result_tmp));
+		bool flag = false;
+		while (compare_func(tmp1, tmp2)) {
+			strcat(tmp2, "0");
+			strcat(one, "0");
+			flag = true;
+		}
+		if (flag) {
+			one[strlen(one) - 1] = '\0';
+			tmp2[strlen(tmp2) - 1] = '\0';
+		}
+		while (compare_func(tmp1, tmp2)) {
+			minus(tmp1, tmp2, result_tmp);
+			remove_zero(result_tmp);
+			strcpy(tmp1, result_tmp);
+			clear_all(result_tmp, '\0', sizeof(result_tmp));
+			plus(counter, one, result_tmp);
+			strcpy(counter, result_tmp);
+			clear_all(result_tmp, 0, strlen(result_tmp));
+		}
+		while (!compare_func(tmp1, tmp2) && strlen(tmp2) > 0) {
+			tmp2[strlen(tmp2) - 1] = '\0';
+			one[strlen(one) - 1] = '\0';
+		}
 	}
-
-
 	strcpy(result, counter);
-
-
-
-	return;
+	return true;
 }
 inline bool modular(char left[], char right[], char r[]) {
 	if (!strcmp(right, "0"))
@@ -672,7 +666,7 @@ inline bool modular(char left[], char right[], char r[]) {
 		right[strlen(right)] = '0';
 		flag = true;
 	}
-	if(flag)
+	if (flag)
 		right[strlen(right) - 1] = '\0';
 	while (compare_func(left, right) || !strcmp(left, right))
 	{
@@ -726,7 +720,6 @@ void get_ans(char input[], char result[]) {
 		if ((data[idx_data] >= 'A' && data[idx_data] <= 'Z') || (data[idx_data] >= 'a' && data[idx_data] <= 'z')) {
 			read_var(data, idx_data);
 			idx_data = strlen(data);
-			continue;
 		}
 		if (data[idx_data] == '*' || data[idx_data] == '/' || data[idx_data] == '%')
 			always_do = true;
@@ -771,6 +764,8 @@ void get_ans(char input[], char result[]) {
 	int pos_point = 0;
 }
 int get_num(char from[], char target[], int p) {
+	if (from[p] == '\0')
+		p--;
 	char tmp[100] = { 0 };
 	int idx = 0;
 	int r = 0;
@@ -881,7 +876,7 @@ bool is_there_point_before_me(char target[], int idx) {
 	return false;
 }
 bool is_there_any_num_before_me(char target[], int idx) {
-	for(int i = idx -1; i >= 0; i--)
+	for (int i = idx - 1; i >= 0; i--)
 		if (target[i] != '0' && target[i] != '-')
 			return true;
 	return false;
