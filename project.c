@@ -53,7 +53,9 @@ bool next_op(char input[], int p);
 
 /*for remove_zero()*/
 bool is_there_point_after_me(char[], int);
+bool is_there_point_before_me(char[], int);
 bool is_there_any_num_before_me(char[], int);
+bool is_there_any_num_after_me(char[], int);
 
 int main()
 {
@@ -816,16 +818,11 @@ void remove_zero(char target[]) {
 			continue;
 		if (!is_there_point_after_me(target, i) && i != strlen(target) - 1 && target[i] == '0' && (idx == 0 || (idx == 1 && tmp[0] == '-')))
 			continue;
+		if (i != strlen(target) - 1 && target[i] == '0' && is_there_point_before_me(target, i) && !is_there_any_num_after_me(target, i))
+			continue;
 		tmp[idx++] = target[i];
 	}
 	strcpy(target, tmp);
-}
-bool check_remove_zero(char target[]) {
-	bool flag = false;
-	for (int i = 0; i < strlen(target); i++)
-		if (target[i] == '.')
-			flag = true;
-	return flag;
 }
 bool is_there_point_after_me(char target[], int idx) {
 	for (int i = idx + 1; i < strlen(target); i++)
@@ -833,9 +830,21 @@ bool is_there_point_after_me(char target[], int idx) {
 			return true;
 	return false;
 }
+bool is_there_point_before_me(char target[], int idx) {
+	for (int i = idx - 1; i >= 0; i--)
+		if (target[i] == '.')
+			return true;
+	return false;
+}
 bool is_there_any_num_before_me(char target[], int idx) {
 	for(int i = idx -1; i >= 0; i--)
 		if (target[i] != '0' && target[i] != '-')
+			return true;
+	return false;
+}
+bool is_there_any_num_after_me(char target[], int idx) {
+	for (int i = idx + 1; i < strlen(target); i++)
+		if (target[i] != '0')
 			return true;
 	return false;
 }
