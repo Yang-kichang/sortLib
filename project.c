@@ -14,7 +14,7 @@ bool flag1 = false;
 /*두 수의 대소를 비교하는 함수*/
 bool compare_func(char first[], char second[]);// 입력받은 두 케이스의 크기를를 비교하는 함수.
 
-/*변수와 관련된 부분*/
+											   /*변수와 관련된 부분*/
 bool check_var(char name);//변수가 이미 존재하는지 검사
 void set_var(char input[]);//변수를 설정하는 함수
 void read_var(char data[], int p);//변수를 읽어주는 함수
@@ -23,13 +23,13 @@ void load_var();//변수를 불러오는 함수
 void save_var();//변수를 설정한 수 저장하는 함수
 
 
-/*입력된 데이터 체크하는 부분*/
+				/*입력된 데이터 체크하는 부분*/
 void input_string(char input[]);//데이터를 입력받는 함수
 int check_error(char input[]);//입력에 에러를 체크해주는 함수
 int number_of_op(char target[]);//연산자를 저장하는 함수
 int number_of_num(char target[]);//수치를 저장하는 함수
 
-/*사칙연산을 위한 부분*/
+								 /*사칙연산을 위한 부분*/
 bool ps_cal(char left[], char right[], char op, char result[]);//연산처리를 하는 함수
 void plus(char left[], char right[], char result[]);//덧셈처리함수
 void minus(char left[], char right[], char result[]);//뺄셈처리함수
@@ -37,20 +37,20 @@ void multiple(char left[], char right[], char result[]);//곱셈처리함수
 bool divide(char left[], char right[], char result[]);//나눗셈처리함수
 bool modular(char left[], char right[], char result[]);//나머지연산 처리함수
 bool dose_it_have_point(char target[], char after_point[]);//소수점 체크함수
-/*연산과 상관없는 부분*/
+														   /*연산과 상관없는 부분*/
 void print_result(char[]);//결과를 화면에 출력해주는 함수
 void remove_zero(char[]);//배열에 값과 관계없는 '0'값을 제거해주는함수
 
-/*초기화와 관련된 부분*/
+						 /*초기화와 관련된 부분*/
 void clear_all(char[], int value, int target_size);//memset과 동일한 기능을 하는 함수
 void clear_after_n(char[], int value, int from, int target_szie);//배열에서 arr[n] 이후에 있는 값들을 제거하는 함수
 
-/*연산 우선순위 & 연산을 처리하는 부분*/
+																 /*연산 우선순위 & 연산을 처리하는 부분*/
 void get_ans(char input[], char result[]);//답을 구하는 함수
 int get_num(char from[], char target[], int p);//스트림에서 숫자를 끌어오는 함수.
 bool next_op(char input[], int p);//다음 연산자가 무엇인지 체크하는 함수
 
-/*for remove_zero()*/
+								  /*for remove_zero()*/
 bool is_there_point_after_me(char[], int);
 bool is_there_point_before_me(char[], int);
 bool is_there_any_num_before_me(char[], int);
@@ -115,6 +115,8 @@ bool compare_func(char first[], char second[]) {
 	}
 	strcat(tmp1, first_after_point);
 	strcat(tmp2, second_after_point);
+	remove_zero(tmp1);
+	remove_zero(tmp2);
 	if (!ddaihao_first && !ddaihao_second)
 		r = !r;
 	else if (ddaihao_first != ddaihao_second) {
@@ -592,8 +594,13 @@ inline void multiple(char first[], char second[], char r[]) {
 }
 inline bool divide(char left[], char right[], char result[]) {
 	char result_tmp[100] = { 0 };
+	remove_zero(right);
 	if (!strcmp(right, "0"))
 		return false;
+	if (!strcmp(right, "1")) {
+		strcpy(result, left);
+		return true;
+	}
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
 	bool ddaihao_first = true;
 	if (left[0] == '-')
@@ -622,6 +629,8 @@ inline bool divide(char left[], char right[], char result[]) {
 	}
 	strcat(tmp1, first_after_point);
 	strcat(tmp2, second_after_point);
+	char tmp2_bak[100];
+	strcpy(tmp2_bak, tmp2);
 	char counter[100] = { 0 }, one[100] = { 0 };
 	counter[0] = '0';
 	one[0] = '1';
@@ -650,6 +659,44 @@ inline bool divide(char left[], char right[], char result[]) {
 		while (!compare_func(tmp1, tmp2) && strlen(tmp2) > 0) {
 			tmp2[strlen(tmp2) - 1] = '\0';
 			one[strlen(one) - 1] = '\0';
+		}
+	}
+	if (strlen(tmp2)) {
+		strcpy(result, counter);
+		return true;
+	}
+	strcpy(tmp2, "0.");
+	tmp2[strlen(tmp2)] = tmp2_bak[0];
+	strcpy(one, "0.1");
+	char zero[10] = { 0 };
+	zero[0] = '0';
+	while (compare_func(tmp1, tmp2) && strlen(one) < 10) {
+		clear_all(result_tmp, '\0', sizeof(result_tmp));
+		while (compare_func(tmp1, tmp2) && strlen(tmp1) < 10) {
+			//puts(tmp1);
+			//puts(tmp2);
+			char ttmp[10] = { 0 };
+			strcpy(ttmp, tmp2);
+			minus(tmp1, ttmp, result_tmp);
+			remove_zero(result_tmp);
+			strcpy(tmp1, result_tmp);
+			clear_all(result_tmp, '\0', sizeof(result_tmp));
+			char tone[20] = { 0 };
+			strcpy(tone, one);
+			plus(counter, tone, result_tmp);
+			strcpy(counter, result_tmp);
+			clear_all(result_tmp, 0, strlen(result_tmp));
+		}
+		while (!compare_func(tmp1, tmp2) && strlen(tmp2) < 10) {
+			char bak = tmp2[strlen(tmp2) - 1];
+			clear_after_n(tmp2, '\0', 2, sizeof(tmp2));
+			strcat(tmp2, zero);
+			tmp2[strlen(tmp2)] = bak;
+			bak = one[strlen(one) - 1];
+			clear_after_n(one, '\0', 2, sizeof(one));
+			strcat(one, zero);
+			one[strlen(one)] = bak;
+			strcat(zero, "0");
 		}
 	}
 	strcpy(result, counter);
