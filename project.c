@@ -64,10 +64,8 @@ int main()
 		int flag = check_error(input);
 		if (!flag)
 			continue;
-		else if (flag == 1) {
+		else if (flag == 1)
 			puts("= error");
-			continue;
-		}
 		else if (flag == -1)
 			return 0;
 		else {
@@ -433,7 +431,6 @@ inline void minus(char left[], char right[], char result[]) {
 	}
 }
 inline void multiple(char first[], char second[], char r[]) {
-
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
 	bool ddaihao_first = true;
 	if (first[0] == '-')
@@ -469,7 +466,6 @@ inline void multiple(char first[], char second[], char r[]) {
 	int second_rev[100] = { 0 }, first_rev[100] = { 0 }, r_rev[100] = { 0 };
 	for (int i = strlen(tmp2) - 1; i >= 0; i--)
 		second_rev[idx++] = tmp2[i] - '0';
-
 	idx = 1;
 	for (int i = strlen(tmp1) - 1; i >= 0; i--)
 		first_rev[idx++] = tmp1[i] - '0';
@@ -498,7 +494,6 @@ inline void multiple(char first[], char second[], char r[]) {
 			r_rev[i] %= 10;
 		}
 	}
-
 	int point_pos = strlen(first_after_point) + strlen(second_after_point);
 	idx = 0;
 	if (ddaihao_first != ddaihao_second)
@@ -513,7 +508,6 @@ inline void multiple(char first[], char second[], char r[]) {
 	}
 }
 inline bool divide(char left[], char right[], char result[]) {
-
 	if (!strcmp(right, "0"))
 		return false;
 	char div[100];
@@ -547,11 +541,7 @@ inline bool divide(char left[], char right[], char result[]) {
 		result[i] = div[idx++];
 
 	}
-
-	//strcpy(result, left);
-
 	return true;
-
 }
 inline bool modular(char left[], char right[], char r[]) {
 	if (!strcmp(right, "0"))
