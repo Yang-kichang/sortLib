@@ -587,41 +587,76 @@ inline void multiple(char first[], char second[], char r[]) {
 
 	}
 }
-inline bool divide(char left[], char right[], char result[]) {
+inline void divide(char left[], char right[], char result[]) {
 	if (!strcmp(right, "0"))
-		return false;
-	char div[100];
-	div[0] = '0';
-	char right_origin[100];
-	while (compare_func(left, right)) {
-		int idx = strlen(right);
-		right[idx] = '0';
+		return ;
+	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
+	bool ddaihao_first = true;
+	if (left[0] == '-')
+		ddaihao_first = false;
+	int idx = 0;
+	for (int i = !ddaihao_first; i < strlen(left); i++)
+		tmp1[idx++] = left[i];
+	bool ddaihao_second = true;
+	if (right[0] == '-')
+		ddaihao_second = false;
+	idx = 0;
+	for (int i = !ddaihao_second; i < strlen(right); i++)
+		tmp2[idx++] = right[i];
+	//부호 정리해주기 완료
+	int tmp[100][100] = { 0 };
+	char first_after_point[11] = { 0 };
+	char second_after_point[11] = { 0 };
+	dose_it_have_point(tmp1, first_after_point);
+	dose_it_have_point(tmp2, second_after_point);
+	if (strlen(first_after_point) > strlen(second_after_point)) {
+		int diff = strlen(first_after_point) - strlen(second_after_point);
+		for (int i = 0; i < diff; i++)
+			strcat(second_after_point, "0");
 	}
-	right[strlen(right) - 1] = '\0';
-	while (compare_func(left, right) || !strcmp(left, right))
-	{
-		minus(left, right, result);
-		div[1]++;
-		strcpy(left, result);
-		clear_all(result, '\0', strlen(right));
-		while (!compare_func(left, right) && strcmp(right, right_origin))
-			right[strlen(right) - 1] = '\0';
-		div[0]++;
+	else {
+		int diff = strlen(second_after_point) - strlen(first_after_point);
+		for (int i = 0; i < diff; i++)
+			strcat(first_after_point, "0");
 	}
-	for (int i = 0; strlen(div); i++)
-		if (div[i] - '0' > 9)
-		{
-			div[i] = div[i] - '9';
-			div[i + 1] ++;
+	strcat(tmp1, first_after_point);
+	strcat(tmp2, second_after_point);
+	char counter[100] = { 0 },one[100]={0};
+	counter[0] = '0';
+	one[0]='1';
 
-		}
-	for (int i = strlen(div); i > 0; i--)
-	{
-		int idx = 0;
-		result[i] = div[idx++];
 
+	while (compare_func(tmp1, tmp2))
+	{
+		minus(tmp1, tmp2, result);
+		remove_zero(result);
+		puts(result);
+		strcpy(tmp1, result);
+		clear_all(result, 0, strlen(result));
+		plus(counter,one,result);
+		strcpy(counter,result);
+		clear_all(result, 0, strlen(result));
+		/*	counter[0]++;
+			puts(counter);
+			int range=strlen(counter);
+			for (int i = 0; i <range; i++)
+			{
+			if (counter[i] > '9') {
+			if (counter[i + 1] == 0)
+			counter[i + 1] = '0';
+			counter[i + 1]++;
+			counter[i]='0';
+			}
+			}
+		 */		
 	}
-	return true;
+
+
+	strcpy(result, counter);
+
+
+
+	return;
 }
 inline bool modular(char left[], char right[], char r[]) {
 	if (!strcmp(right, "0"))
