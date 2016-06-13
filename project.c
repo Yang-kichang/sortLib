@@ -701,7 +701,9 @@ inline bool divide(char left[], char right[], char result[]) {
 	}
 	if((left[0]=='-'&&right[0]!='-')||left[0]!='-'&&right[0]=='-')
 		op[0]='-';
-	result[0]='-';
+	
+	result[0]=op[0];
+	op[0]='\0';
 	strcat(result, counter);
 	return true;
 }
