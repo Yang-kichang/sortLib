@@ -14,7 +14,7 @@ bool flag1 = false;
 /*두 수의 대소를 비교하는 함수*/
 bool compare_func(char first[], char second[]);// 입력받은 두 케이스의 크기를를 비교하는 함수.
 
-											   /*변수와 관련된 부분*/
+/*변수와 관련된 부분*/
 bool check_var(char name);//변수가 이미 존재하는지 검사
 void set_var(char input[]);//변수를 설정하는 함수
 void read_var(char data[], int p);//변수를 읽어주는 함수
@@ -22,39 +22,43 @@ void show_var();//저장된  변수를 보여주는 함수
 void load_var();//변수를 불러오는 함수
 void save_var();//변수를 설정한 수 저장하는 함수
 
+/*입력된 데이터 체크하는 부분*/
+void input_string(char[]);//데이터를 입력받는 함수
+int check_error(char[]);//입력에 에러를 체크해주는 함수
+int number_of_op(char[]);//연산자를 저장하는 함수
+int number_of_num(char[]);//수치를 저장하는 함수
 
-				/*입력된 데이터 체크하는 부분*/
-void input_string(char input[]);//데이터를 입력받는 함수
-int check_error(char input[]);//입력에 에러를 체크해주는 함수
-int number_of_op(char target[]);//연산자를 저장하는 함수
-int number_of_num(char target[]);//수치를 저장하는 함수
+/*사칙연산을 위한 부분*/
+bool ps_cal(char[], char[], char, char[]);//연산처리를 하는 함수
+void plus(char[], char[], char[]);//덧셈처리함수
+void minus(char[], char[], char[]);//뺄셈처리함수
+void multiple(char[], char[], char[]);//곱셈처리함수
+bool divide(char[], char[], char[]);//나눗셈처리함수
+bool modular(char[], char[], char[]);//나머지연산 처리함수
+bool dose_it_have_point(char[], char[]);//소수점 체크함수
 
-								 /*사칙연산을 위한 부분*/
-bool ps_cal(char left[], char right[], char op, char result[]);//연산처리를 하는 함수
-void plus(char left[], char right[], char result[]);//덧셈처리함수
-void minus(char left[], char right[], char result[]);//뺄셈처리함수
-void multiple(char left[], char right[], char result[]);//곱셈처리함수
-bool divide(char left[], char right[], char result[]);//나눗셈처리함수
-bool modular(char left[], char right[], char result[]);//나머지연산 처리함수
-bool dose_it_have_point(char target[], char after_point[]);//소수점 체크함수
-														   /*연산과 상관없는 부분*/
+/*연산과 상관없는 부분*/
 void print_result(char[]);//결과를 화면에 출력해주는 함수
 void remove_zero(char[]);//배열에 값과 관계없는 '0'값을 제거해주는함수
 
-						 /*초기화와 관련된 부분*/
-void clear_all(char[], int value, int target_size);//memset과 동일한 기능을 하는 함수
-void clear_after_n(char[], int value, int from, int target_szie);//배열에서 arr[n] 이후에 있는 값들을 제거하는 함수
+/*초기화와 관련된 부분*/
+void clear_all(char[], int, int);//memset과 동일한 기능을 하는 함수
+void clear_after_n(char[], int, int, int);//배열에서 arr[n] 이후에 있는 값들을 제거하는 함수
 
-																 /*연산 우선순위 & 연산을 처리하는 부분*/
-void get_ans(char input[], char result[]);//답을 구하는 함수
-int get_num(char from[], char target[], int p);//스트림에서 숫자를 끌어오는 함수.
-bool next_op(char input[], int p);//다음 연산자가 무엇인지 체크하는 함수
+/*연산 우선순위 & 연산을 처리하는 부분*/
+void get_ans(char[], char[]);//답을 구하는 함수
+int get_num(char[], char[], int);//스트림에서 숫자를 끌어오는 함수.
+bool next_op(char[], int);//다음 연산자가 무엇인지 체크하는 함수
 
-								  /*for remove_zero()*/
+/*for remove_zero()*/
 bool is_there_point_after_me(char[], int);
 bool is_there_point_before_me(char[], int);
 bool is_there_any_num_before_me(char[], int);
 bool is_there_any_num_after_me(char[], int);
+
+/*for divide()*/
+void move_point(char[]);
+int have_point(char[]);
 
 int main()
 {
@@ -661,20 +665,24 @@ inline bool divide(char left[], char right[], char result[]) {
 			one[strlen(one) - 1] = '\0';
 		}
 	}
-	if (strlen(tmp2)) {
+	remove_zero(tmp1);
+	bool go = strcmp(tmp1, "0");
+	if (!go) {
 		strcpy(result, counter);
 		return true;
 	}
-	strcpy(tmp2, "0.");
-	tmp2[strlen(tmp2)] = tmp2_bak[0];
-	strcpy(one, "0.1");
-	char zero[10] = { 0 };
-	zero[0] = '0';
-	while (compare_func(tmp1, tmp2) && strlen(one) < 10) {
+	strcpy(tmp2, tmp2_bak);
+	strcpy(one, "1");
+	while(!compare_func(tmp1, tmp2)) {
+		move_point(tmp2);
+		move_point(one);
+	}
+	int cnt = 0;
+	while (compare_func(tmp1, tmp2) && strlen(one) < 12) {
 		clear_all(result_tmp, '\0', sizeof(result_tmp));
-		while (compare_func(tmp1, tmp2) && strlen(tmp1) < 10) {
-			//puts(tmp1);
-			//puts(tmp2);
+		cnt = 0;
+		while (compare_func(tmp1, tmp2) && cnt < 10) {
+			cnt++;
 			char ttmp[10] = { 0 };
 			strcpy(ttmp, tmp2);
 			minus(tmp1, ttmp, result_tmp);
@@ -687,16 +695,9 @@ inline bool divide(char left[], char right[], char result[]) {
 			strcpy(counter, result_tmp);
 			clear_all(result_tmp, 0, strlen(result_tmp));
 		}
-		while (!compare_func(tmp1, tmp2) && strlen(tmp2) < 10) {
-			char bak = tmp2[strlen(tmp2) - 1];
-			clear_after_n(tmp2, '\0', 2, sizeof(tmp2));
-			strcat(tmp2, zero);
-			tmp2[strlen(tmp2)] = bak;
-			bak = one[strlen(one) - 1];
-			clear_after_n(one, '\0', 2, sizeof(one));
-			strcat(one, zero);
-			one[strlen(one)] = bak;
-			strcat(zero, "0");
+		while (!compare_func(tmp1, tmp2) && strlen(tmp2) < 12) {
+			move_point(tmp2);
+			move_point(one);
 		}
 	}
 	if((left[0]=='-'&&right[0]!='-')||left[0]!='-'&&right[0]=='-')
@@ -937,4 +938,46 @@ bool is_there_any_num_after_me(char target[], int idx) {
 		if (target[i] != '0')
 			return true;
 	return false;
+}
+
+void move_point(char target[]) {
+	int flag = have_point(target);
+	remove_zero(target);
+	if(flag) {
+		char tmp[100] = {0};
+		int idx = 0;
+		for(int i = 0; i < strlen(target); i++) {
+			if(target[i] == '.')
+				continue;
+			tmp[idx++] = target[i];
+		}
+		idx = 0;
+		clear_all(target, '\0', strlen(target));
+		for(int i = 0; i < strlen(tmp); i++) {
+			if(i == flag - 1)
+				target[idx++] = '.';
+			target[idx++] = tmp[i];
+		}
+	}
+	else if(target[0] != '.') {
+		char tmp[100] = {0};
+		strcpy(tmp, "0");
+		strcat(tmp, target);
+		char bak = tmp[strlen(tmp) - 1];
+		tmp[strlen(tmp) - 1] = '.';
+		tmp[strlen(tmp)] = bak;
+		strcpy(target, tmp);
+	}
+	if(target[0] == '.') {
+		char tmp[100] = {0};
+		tmp[0] = '0';
+		strcat(tmp, target);
+		strcpy(target, tmp);
+	}
+}
+int have_point(char target[]) {
+	for(int i = 0; i < strlen(target); i++) 
+		if(target[i] == '.')
+			return i;
+	return 0;
 }
