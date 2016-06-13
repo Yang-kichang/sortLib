@@ -42,7 +42,7 @@ void print_result(char[]);//결과를 화면에 출력해주는 함수
 void remove_zero(char[]);//배열에 값과 관계없는 '0'값을 제거해주는함수
 
 /*초기화와 관련된 부분*/
-void clear_all(char[], int, int);//memset과 동일한 기능을 하는 함수
+void clear_all(char[], int, int);//배열을 초기화하는 함수
 void clear_after_n(char[], int, int, int);//배열에서 arr[n] 이후에 있는 값들을 제거하는 함수
 
 /*연산 우선순위 & 연산을 처리하는 부분*/
@@ -67,7 +67,7 @@ int main()
 		printf("(input)");
 		char input[100] = { 0 };
 		input_string(input);
-		int flag = check_error(input);
+		int flag = check_error(input); //입력한 것에서 에러를 호출할지 다른 연산을 수행할지 결정한다.
 		if (!flag)
 			continue;
 		else if (flag == 1)
@@ -81,14 +81,14 @@ int main()
 			if (number_of_op(result)) {
 				char tmp[100];
 				strcpy(tmp, result);
-				clear_all(result, '\0', strlen(result));
-				get_ans(tmp, result);
+				clear_all(result, '\0', strlen(result)); //매 계산마다 배열을 초기화
+				get_ans(tmp, result);//수식일부를 계산해서 다시 넣어주거나 완전한 계산을 끝냄
 			}
-			print_result(result);
+			print_result(result);// 결과값에 ,를 찍음
 		}
 	}
 }
-bool compare_func(char first[], char second[]) {
+bool compare_func(char first[], char second[]) {//매개변수로 받은 두 숫자를 비교하여 같으면 왼쪽값이 더 크거나 같으면 true를, 오른쪽 값이 크면 false를 반환한다.
 	bool r = true;
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
 	bool ddaihao_first = true;
@@ -107,7 +107,7 @@ bool compare_func(char first[], char second[]) {
 	char second_after_point[11] = { 0 };
 	dose_it_have_point(tmp1, first_after_point);
 	dose_it_have_point(tmp2, second_after_point);
-	if (strlen(first_after_point) > strlen(second_after_point)) {
+	if (strlen(first_after_point) > strlen(second_after_point)) { //길이에서 크기를 판단할 수 있으면 소수부분으로 판단
 		int diff = strlen(first_after_point) - strlen(second_after_point);
 		for (int i = 0; i < diff; i++)
 			strcat(second_after_point, "0");
@@ -119,9 +119,9 @@ bool compare_func(char first[], char second[]) {
 	}
 	strcat(tmp1, first_after_point);
 	strcat(tmp2, second_after_point);
-	remove_zero(tmp1);
+	remove_zero(tmp1);//소수점 뒤의 필요없는 0을 제거
 	remove_zero(tmp2);
-	if (!ddaihao_first && !ddaihao_second)
+	if (!ddaihao_first && !ddaihao_second) //'-'단항연산 유무로 확인
 		r = !r;
 	else if (ddaihao_first != ddaihao_second) {
 		if (ddaihao_first)
@@ -129,9 +129,9 @@ bool compare_func(char first[], char second[]) {
 		else
 			return !r;
 	}
-	int len_of_first = strlen(tmp1);
+	int len_of_first = strlen(tmp1); 
 	int len_of_second = strlen(tmp2);
-	if (len_of_first > len_of_second)
+	if (len_of_first > len_of_second) // 정수 부분 길이로 따져 크기비교
 		return r;
 	else if (len_of_first < len_of_second)
 		return !r;
@@ -159,7 +159,7 @@ bool check_var(char name) {
 }
 void set_var(char input[]) {
 	if (input[0] >= 'a' && input[0] <= 'z')
-		input[0] -= ('a' - 'A');
+		input[0] -= ('a' - 'A'); //대문자로 변환
 	int idx_var = number_of_var;
 	if (check_var(input[0])) {
 		int i;
@@ -183,9 +183,9 @@ void set_var(char input[]) {
 			show_value[idx++] = input[i];
 		}
 	}
-	if (flag1 == false) {
+	if (flag1 == false) {//변수설정함수(set_var함수)를 거칠 때만 동작
 		printf("= ");
-		print_result(show_value);
+		print_result(show_value); // x = 123이라 입력하면 = 123을 출력해주기
 	}
 	idx = 0;
 	for (; i < strlen(input); i++)
@@ -211,7 +211,7 @@ void read_var(char data[], int p) {
 	for (i = 0; i < strlen(var_value[idx]); i++)
 		data[p++] = var_value[idx][i];
 }
-void show_var() {
+void show_var() { //변수를 출력
 	int i;
 	if (!number_of_var)
 		puts("정의된 변수 없음");
@@ -249,7 +249,7 @@ void save_var() {
 		fprintf(save, "%c = %s\n", var_name[i], var_value[i]);
 	fclose(save);
 }
-void input_string(char input[]) {
+void input_string(char input[]) { //구분 없이 입력받은 그대로 저장
 	char c;
 	int idx = 0;
 	while (1) {
@@ -317,14 +317,14 @@ int check_error(char input[]) {
 		return 1;
 	return 2; //연산하기
 }
-int number_of_op(char target[]) {
+int number_of_op(char target[]) { //남은 연산자의 수 세기
 	int value_to_return = 0;
 	for (int i = 1; i < strlen(target); i++)
 		if ((target[i] == '*' || target[i] == '+' || target[i] == '/' || target[i] == '-' || target[i] == '%') && target[i - 1] == ' ' && target[i + 1] == ' ')
 			value_to_return++;
 	return value_to_return;
 }
-int number_of_num(char target[]) {
+int number_of_num(char target[]) { //들어온 수를 공백 기준으로 구분해 숫자 갯수 세기
 	int value_to_return = 0;
 	int idx = 0;
 	while (idx < strlen(target)) {
@@ -338,7 +338,7 @@ int number_of_num(char target[]) {
 		if (flag)
 			value_to_return++;
 		while (!((target[idx] >= '0' && target[idx] <= '9') || target[idx] == '.' || (target[idx] >= 'A' && target[idx] <= 'Z') || (target[idx] >= 'a' && target[idx] <= 'z'))) {
-			if (target[idx + 1] != '\0')
+			if (target[idx + 1] != '\0') //공백이 있으면 끝에 널문자
 				idx++;
 			else
 				break;
@@ -346,32 +346,32 @@ int number_of_num(char target[]) {
 	}
 	return value_to_return;
 }
-bool ps_cal(char left[], char right[], char op, char result[]) {
+bool ps_cal(char left[], char right[], char op, char result[]) { //양쪽이 각각 음수인지 양수인지에 따라 각 연산자에 따라 다른 경우 호출
 	bool is_error = false;
 	if (op == '+') {
-		if (left[0] != '-' && right[0] != '-')
+		if (left[0] != '-' && right[0] != '-')  //양쪽 양수 양수 일때의 경우
 			plus(left, right, result);
-		else if (left[0] == '-' && right[0] == '-') {
+		else if (left[0] == '-' && right[0] == '-') {//양쪽 음수 음수일때의 경우
 			result[0] = '-';
 			char tmp1[70] = { 0 }, tmp2[70] = { 0 };
 			for (int i = 1; i < strlen(left); i++)
 				tmp1[i - 1] = left[i];
 			for (int i = 1; i < strlen(right); i++)
 				tmp2[i - 1] = right[i];
-			plus(tmp1, tmp2, result);
+			plus(tmp1, tmp2, result); // 절댓값으로 plus 함수 호출 , -는 결과값인 result[0]에 저장
 		}
-		else if (left[0] != '-' && right[0] == '-') {
+		else if (left[0] != '-' && right[0] == '-') {//양수 음수일 경우
 			char tmp[70] = { 0 };
 			for (int i = 1; i < strlen(right); i++)
 				tmp[i - 1] = right[i];
-			if (compare_func(left, tmp))
+			if (compare_func(left, tmp)) // 절댓값 비교
 				minus(left, tmp, result);
 			else {
 				result[0] = '-';
 				minus(tmp, left, result);
 			}
 		}
-		else if (left[0] == '-' && right[0] != '-') {
+		else if (left[0] == '-' && right[0] != '-') { // 음수 양수의 경우
 			char tmp[70] = { 0 };
 			for (int i = 1; i < strlen(left); i++)
 				tmp[i - 1] = left[i];
@@ -383,7 +383,7 @@ bool ps_cal(char left[], char right[], char op, char result[]) {
 				minus(right, tmp, result);
 		}
 	}
-	else if (op == '-') {
+	else if (op == '-') { //'+'처럼 경우를 나눠서 처리
 		if (left[0] != '-' && right[0] != '-') {
 			if (compare_func(left, right))
 				minus(left, right, result);
@@ -426,18 +426,18 @@ bool ps_cal(char left[], char right[], char op, char result[]) {
 	else
 		is_error = modular(left, right, result);
 	if (is_error)
-		return false;
+		return false; /// 왜필요?
 	return true;
 }
 inline void plus(char left[], char right[], char result[]) {
 	char left_after_point[11] = { 0 };
 	char right_after_point[11] = { 0 };
 	dose_it_have_point(left, left_after_point);
-	dose_it_have_point(right, right_after_point);
-	if (strlen(left_after_point) > strlen(right_after_point)) {
+	dose_it_have_point(right, right_after_point); //right(정수부분)과 right_after_point(소수부분)을 나누는 함수 
+	if (strlen(left_after_point) > strlen(right_after_point)) { // 왼편과 오른편중 어느 수가 소수점 뒤가 더 긴지 따짐
 		int diff = strlen(left_after_point) - strlen(right_after_point);
 		for (int i = 0; i < diff; i++)
-			strcat(right_after_point, "0");
+			strcat(right_after_point, "0");//짧은 쪽에 부족한 만큼 0을 붙여 길이를 맞춤 (123.123 + 123.120)
 	}
 	else {
 		int diff = strlen(right_after_point) - strlen(left_after_point);
@@ -445,14 +445,14 @@ inline void plus(char left[], char right[], char result[]) {
 			strcat(left_after_point, "0");
 	}
 	strcat(left, left_after_point);
-	strcat(right, right_after_point);
+	strcat(right, right_after_point); // (123123 + 123120)
 	int left_rev[100] = { 0 }, right_rev[100] = { 0 };
 	int idx = 1, len = strlen(left) + strlen(right);
 	if (strlen(left) > strlen(right))
 		len = strlen(left) + 1;
 	else
 		len = strlen(right) + 1;
-	for (int i = strlen(left) - 1; i >= 0; i--)
+	for (int i = strlen(left) - 1; i >= 0; i--)  //거꾸로 연산
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
 	for (int i = strlen(right) - 1; i >= 0; i--)
@@ -464,13 +464,13 @@ inline void plus(char left[], char right[], char result[]) {
 			result_rev[i + 1] += result_rev[i] / 10;
 			result_rev[i] %= 10;
 		}
-	}
-	int point_pos = strlen(left_after_point);
+	} //(246243)
+	int point_pos = strlen(left_after_point); 
 	idx = strlen(result);
 	for (int i = len; i > 0; i--) {
 		if (i == point_pos)
 			result[idx++] = '.';
-		result[idx++] = result_rev[i] + '0';
+		result[idx++] = result_rev[i] + '0'; //(246.243)
 	}
 	remove_zero(result);
 }
@@ -480,7 +480,7 @@ inline void minus(char left[], char right[], char result[]) {
 	dose_it_have_point(left, left_after_point);
 	dose_it_have_point(right, right_after_point);
 	if (strlen(left_after_point) > strlen(right_after_point)) {
-		int diff = strlen(left_after_point) - strlen(right_after_point);
+		int diff = strlen(left_after_point) - strlen(right_after_point); //'+'때와 같이 짧은 쪽에 0붙이기
 		for (int i = 0; i < diff; i++)
 			strcat(right_after_point, "0");
 	}
@@ -497,7 +497,7 @@ inline void minus(char left[], char right[], char result[]) {
 		len = strlen(left);
 	else
 		len = strlen(right);
-	for (int i = strlen(left) - 1; i >= 0; i--)
+	for (int i = strlen(left) - 1; i >= 0; i--) //거꾸로 연산
 		left_rev[idx++] = left[i] - '0';
 	idx = 1;
 	for (int i = strlen(right) - 1; i >= 0; i--)
@@ -505,9 +505,9 @@ inline void minus(char left[], char right[], char result[]) {
 	int result_rev[100] = { 0 };
 	for (int i = 1; i <= len; i++) {
 		result_rev[i] += left_rev[i] - right_rev[i];
-		if (result_rev[i] < 0) {
-			result_rev[i + 1] += -1;
-			result_rev[i] = 10 + result_rev[i];
+		if (result_rev[i] < 0) {    //빼서 그 자리에서 음수가 나올 경우 
+			result_rev[i + 1] += -1; // 그 다음 자리에서 1을 빼기
+			result_rev[i] = 10 + result_rev[i]; //현재 자리에 10을 추가하기
 		}
 	}
 	int point_pos = strlen(left_after_point);
@@ -515,12 +515,12 @@ inline void minus(char left[], char right[], char result[]) {
 	for (int i = len; i > 0; i--) {
 		if (i == point_pos)
 			result[idx++] = '.';
-		result[idx++] = result_rev[i] + '0';
+		result[idx++] = result_rev[i] + '0'; //소수점 없이 계산 후 소수점 찍어주기
 	}
 }
 inline void multiple(char first[], char second[], char r[]) {
 	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
-	bool ddaihao_first = true;
+	bool ddaihao_first = true; // 왼편 오른편 양수 음수 경우를 따져서 결과값에 -를 붙일지 결정
 	if (first[0] == '-')
 		ddaihao_first = false;
 	int idx = 0;
@@ -538,7 +538,7 @@ inline void multiple(char first[], char second[], char r[]) {
 	char second_after_point[11] = { 0 };
 	dose_it_have_point(tmp1, first_after_point);
 	dose_it_have_point(tmp2, second_after_point);
-	if (strlen(first_after_point) > strlen(second_after_point)) {
+	if (strlen(first_after_point) > strlen(second_after_point)) { // +때와 같이 짧은 쪽에 0을 붙이기
 		int diff = strlen(first_after_point) - strlen(second_after_point);
 		for (int i = 0; i < diff; i++)
 			strcat(second_after_point, "0");
@@ -552,7 +552,7 @@ inline void multiple(char first[], char second[], char r[]) {
 	strcat(tmp2, second_after_point);
 	idx = 1;
 	int second_rev[100] = { 0 }, first_rev[100] = { 0 }, r_rev[100] = { 0 };
-	for (int i = strlen(tmp2) - 1; i >= 0; i--)
+	for (int i = strlen(tmp2) - 1; i >= 0; i--) //거꾸로 연산
 		second_rev[idx++] = tmp2[i] - '0';
 	idx = 1;
 	for (int i = strlen(tmp1) - 1; i >= 0; i--)
@@ -561,11 +561,11 @@ inline void multiple(char first[], char second[], char r[]) {
 	for (int i = 1; i <= strlen(tmp2); i++) {
 		int j;
 		for (j = 1; j < i; j++)
-			tmp[i][j] = 0;
+			tmp[i][j] = 0; 
 		for (j = i; j < strlen(tmp1) + i; j++) {
-			tmp[i][j] += (second_rev[i]) * (first_rev[j - i + 1]);
-			if (tmp[i][j] >= 10) {
-				tmp[i][j + 1] += tmp[i][j] / 10;
+			tmp[i][j] += (second_rev[i]) * (first_rev[j - i + 1]); //first의 각 자리와 second의 각 자리를 곱하는 모든 경우의 수 저장
+			if (tmp[i][j] >= 10) { /// 왜필요??
+				tmp[i][j + 1] += tmp[i][j] / 10; 
 				tmp[i][j] %= 10;
 			}
 		}
@@ -575,7 +575,7 @@ inline void multiple(char first[], char second[], char r[]) {
 	for (int i = 1; i <= len; i++) {
 		int sum = 0;
 		for (int j = 1; j <= strlen(tmp2); j++)
-			sum += tmp[j][i];
+			sum += tmp[j][i]; //모든 경우를 더하기 
 		r_rev[i] += sum;
 		if (r_rev[i] >= 10) {
 			r_rev[i + 1] += r_rev[i] / 10;
@@ -586,12 +586,12 @@ inline void multiple(char first[], char second[], char r[]) {
 	idx = 0;
 	if (ddaihao_first != ddaihao_second)
 		r[idx++] = '-';
-	for (int i = len; i >= 1; i--) {
+	for (int i = len; i >= 1; i--) { //소수점을 찍고, 문자열로 되돌리고, 순서도 바로잡기
 		if (((idx == 0) || (idx == 1 && r[0] == '-')) && r_rev[i] == 0 && i != 1)
 			continue;
 		if (i == point_pos)
 			r[idx++] = '.';
-		r[idx++] = r_rev[i] + '0';
+		r[idx++] = r_rev[i] + '0'; 
 
 	}
 }
@@ -609,7 +609,7 @@ inline bool divide(char left[], char right[], char result[]) {
 	if (left[0] == '-')
 		ddaihao_first = false;
 	int idx = 0;
-	for (int i = !ddaihao_first; i < strlen(left); i++) tmp1[idx++] = left[i];
+	for (int i = !ddaihao_first; i < strlen(left); i++) tmp1[idx++] = left[i]; // 절댓값 집어넣기
 	bool ddaihao_second = true;
 	if (right[0] == '-')
 		ddaihao_second = false;
@@ -619,7 +619,7 @@ inline bool divide(char left[], char right[], char result[]) {
 	char first_after_point[11] = { 0 };
 	char second_after_point[11] = { 0 };
 	dose_it_have_point(tmp1, first_after_point);
-	dose_it_have_point(tmp2, second_after_point);
+	dose_it_have_point(tmp2, second_after_point); //정수부분, 소수부분 정리
 	if (strlen(first_after_point) > strlen(second_after_point)) {
 		int diff = strlen(first_after_point) - strlen(second_after_point);
 		for (int i = 0; i < diff; i++)
@@ -734,7 +734,7 @@ bool dose_it_have_point(char target[], char after_point[]) {
 	int len = strlen(target);
 	int i;
 	bool flag = false;
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < len; i++) {//정수부분
 		if (target[i] == '.') {
 			target[i] = '\0';
 			flag = true;
@@ -743,12 +743,12 @@ bool dose_it_have_point(char target[], char after_point[]) {
 	}
 	i++;
 	int idx = 0;
-	for (; i < len; i++)
+	for (; i < len; i++)//소수부분
 		after_point[idx++] = target[i];
 	return flag;
 }
 
-void clear_all(char target[], int value, int target_size) {
+void clear_all(char target[], int value, int target_size) { // 
 	for (int i = 0; i < target_size; i++)
 		target[i] = value;
 }
@@ -863,11 +863,11 @@ void print_result(char result[]) {
 			pass_point_yes = 1;
 			n = 0;
 		}
-		else if (idx == 4 * n + 3 && pass_point_yes == 0) {
+		else if (idx == 4 * n + 3 && pass_point_yes == 0) {//소수부분에서 거꾸로에서부터 3자리씩 지나가면 ,찍기
 			to_print_thingsi_rev[idx++] = ',';
 			n++;
 		}
-		else if (k == 3 * n + 3 && pass_point_yes == 1) {
+		else if (k == 3 * n + 3 && pass_point_yes == 1) { //정수부분에서 거꾸로에서부터 3자리씩 지나가면 ,찍기
 			to_print_thingsi_rev[idx++] = ',';
 			n++;
 		}
@@ -880,7 +880,7 @@ void print_result(char result[]) {
 	printf("\n");
 
 }
-void remove_zero(char target[]) {
+void remove_zero(char target[]) { 
 	bool have_point = false;
 	int pos_point;
 	for (int i = strlen(target) - 1, j = 0; i >= 0; i--, j++) {
