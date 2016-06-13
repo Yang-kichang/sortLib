@@ -468,12 +468,11 @@ inline void plus(char left[], char right[], char result[]) {
 	int point_pos = strlen(left_after_point);
 	idx = strlen(result);
 	for (int i = len; i > 0; i--) {
-		if ((idx == 0 || (idx == 1 && result[0] == '-')) && result_rev[i] == 0 && i != 1)
-			continue;
 		if (i == point_pos)
 			result[idx++] = '.';
 		result[idx++] = result_rev[i] + '0';
 	}
+	remove_zero(result);
 }
 inline void minus(char left[], char right[], char result[]) {
 	char left_after_point[11] = { 0 };
@@ -638,8 +637,7 @@ inline bool divide(char left[], char right[], char result[]) {
 	char counter[100] = { 0 }, one[100] = { 0 };
 	counter[0] = '0';
 	one[0] = '1';
-	while (compare_func(tmp1, tmp2) && strcmp(tmp2, "") && strlen(one))
-	{
+	while (compare_func(tmp1, tmp2) && strcmp(tmp2, "") && strlen(one)) {
 		clear_all(result_tmp, '\0', sizeof(result_tmp));
 		bool flag = false;
 		while (compare_func(tmp1, tmp2)) {
@@ -660,11 +658,12 @@ inline bool divide(char left[], char right[], char result[]) {
 			strcpy(counter, result_tmp);
 			clear_all(result_tmp, 0, strlen(result_tmp));
 		}
-		while (!compare_func(tmp1, tmp2) && strlen(tmp2) > 0) {
+		while (!compare_func(tmp1, tmp2) && compare_func(tmp2, "0")) {
 			tmp2[strlen(tmp2) - 1] = '\0';
 			one[strlen(one) - 1] = '\0';
 		}
 	}
+	// 몫을 정수부분까지 계산 완료
 	remove_zero(tmp1);
 	bool go = strcmp(tmp1, "0");
 	if (!go) {
@@ -672,17 +671,17 @@ inline bool divide(char left[], char right[], char result[]) {
 		return true;
 	}
 	strcpy(tmp2, tmp2_bak);
-	strcpy(one, "1");
+	strcpy(one, "0.1");
 	while(!compare_func(tmp1, tmp2)) {
 		move_point(tmp2);
-		move_point(one);
+		if(!compare_func(tmp1, tmp2))
+			move_point(one);
+		remove_zero(tmp2);
+		remove_zero(one);
 	}
-	int cnt = 0;
 	while (compare_func(tmp1, tmp2) && strlen(one) < 12) {
 		clear_all(result_tmp, '\0', sizeof(result_tmp));
-		cnt = 0;
-		while (compare_func(tmp1, tmp2) && cnt < 10) {
-			cnt++;
+		while (compare_func(tmp1, tmp2)) {
 			char ttmp[10] = { 0 };
 			strcpy(ttmp, tmp2);
 			minus(tmp1, ttmp, result_tmp);
