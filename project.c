@@ -593,7 +593,7 @@ inline void multiple(char first[], char second[], char r[]) {
 	}
 }
 inline bool divide(char left[], char right[], char result[]) {
-	char result_tmp[100] = { 0 };
+	char result_tmp[100] = { 0 },op[2]={'\0','\0'};
 	remove_zero(right);
 	if (!strcmp(right, "0"))
 		return false;
@@ -699,7 +699,10 @@ inline bool divide(char left[], char right[], char result[]) {
 			strcat(zero, "0");
 		}
 	}
-	strcpy(result, counter);
+	if((left[0]=='-'&&right[0]!='-')||left[0]!='-'&&right[0]=='-')
+		op[0]='-';
+	result[0]='-';
+	strcat(result, counter);
 	return true;
 }
 inline bool modular(char left[], char right[], char r[]) {
