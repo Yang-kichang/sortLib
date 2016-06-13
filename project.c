@@ -710,25 +710,36 @@ inline bool divide(char left[], char right[], char result[]) {
 inline bool modular(char left[], char right[], char r[]) {
 	if (!strcmp(right, "0"))
 		return false;
+	char tmp1[100] = { 0 }, tmp2[100] = { 0 };
+	bool ddaihao_first = true;
+	if (left[0] == '-')
+		ddaihao_first = false;
+	int idx = 0;
+	for (int i = !ddaihao_first; i < strlen(left); i++) tmp1[idx++] = left[i];
+	bool ddaihao_second = true;
+	if (right[0] == '-')
+		ddaihao_second = false;
+	idx = 0;
+	for (int i = !ddaihao_second; i < strlen(right); i++) tmp2[idx++] = right[i];
 	char right_origin[100];
-	strcpy(right_origin, right);
+	strcpy(right_origin, tmp2);
 	bool flag = false;
-	while (compare_func(left, right)) {
-		right[strlen(right)] = '0';
+	while (compare_func(tmp1, tmp2)) {
+		tmp2[strlen(tmp2)] = '0';
 		flag = true;
 	}
 	if (flag)
-		right[strlen(right) - 1] = '\0';
-	while (compare_func(left, right) || !strcmp(left, right))
+		tmp2[strlen(tmp2) - 1] = '\0';
+	while (compare_func(tmp1, tmp2) || !strcmp(tmp1, tmp2))
 	{
-		minus(left, right, r);
+		minus(tmp1, tmp2, r);
 		remove_zero(r);
-		strcpy(left, r);
+		strcpy(tmp1, r);
 		clear_all(r, '\0', strlen(r));
-		while (!compare_func(left, right) && strcmp(right, right_origin))
-			right[strlen(right) - 1] = '\0';
+		while (!compare_func(tmp1, tmp2) && strcmp(tmp2, right_origin))
+			tmp2[strlen(tmp2) - 1] = '\0';
 	}
-	strcpy(r, left);
+	strcpy(r, tmp1);
 }
 bool dose_it_have_point(char target[], char after_point[]) {
 	int len = strlen(target);
